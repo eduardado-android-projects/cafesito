@@ -50,6 +50,15 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
         initToolBar();
     }
 
+    @Override
+    protected void onResume() {
+        Log.i(TAG, "onResume: HE VUELTO");
+        super.onResume();
+        Cafetero cafeteroPrueba = mCafeteros.get(0);
+        Log.i(TAG, "onResume: " + cafeteroPrueba.toString());
+        mCafeteroRecyclerAdapter.notifyDataSetChanged();
+    }
+
     private void initToolBar() {
         setSupportActionBar(mListaCafeterosToolbar);
         setTitle(R.string.titulo_toolbar_cafeteros);
@@ -83,7 +92,7 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
 
     @Override
     public void onCafeteroClick(Integer position) { //AQUÍ SOLO MANDA NUEVOS CAFETEROS
-        Log.d(TAG, "onCafeteroClick: clicaste en" + position);
+        Log.d(TAG, "onCafeteroClick: clicaste en el cafetero: " + mCafeteros.get(position).toString());
         Intent intent = new Intent(this,CafeteroActivity.class);
         intent.putExtra("com.edusoft.dam.cafesito.cafetero_old", mCafeteros.get(position)); //usamos el paquete único de la app + nombre del objeto (buenas prácticas por si recibimos mismo objeto de otra app)
         startActivity(intent);

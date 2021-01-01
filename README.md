@@ -82,7 +82,7 @@ Activities
     * Log: d(); i() ;
     * RecyclerView.ViewHolder: setText(); getAdapterPosition()
     * RecyclerView.Adapter<>: onCreateViewHolder(); onBindViewHolder(); getItemCount()
-    * View: findViewById(); setOnClickListener(); getLineHeight(); getHeight(); onDraw()
+    * View: findViewById(); setOnClickListener(); getLineHeight(); getHeight(); onDraw(); setVisibility();setBackgroundColor();    setTextColor();
     * ArrayList<>: get(); size()
     * LayoutInflater: from(); inflate()
     * ViewGroup: getContext();
@@ -113,8 +113,9 @@ Activities
     * ImageButton: layout_centerInParent; background ="?attr/selectableItemBackGround"
     * LinedEditText(custom)
     * shape: shape="rectangle"
-    * stroke: width; color
-    * corner: radius
+      * stroke: width; color
+      * corner: radius
+      * solid: color;
 
   
   #### Otros recursos usados
@@ -229,6 +230,19 @@ Activities
     1. Crear un drawable resource
     2. Usar <shape><stroke><corners> para definir el borde deseado
     3. Añadir al widget el atributo background referenciando el drawable.xml creado (mirar codigo)
+
+  #### View + Edit en el mismo activity
+
+    Resumen: Decido diseñar la app de tal manera que la opción READ y la opción EDIT del CRUD se muestren en la misma activity.
+    Lo que hago es guardar un estado del activity en la variable "modo". Cuando se pulsa el botón flotante los widgets cambian de
+    color, algunos desaparecen de la vista (View.changevisibility()) para dar paso a EditText etc. Lo importante es que el usuario
+    puede modificar los datos y, al volver a pulsar el botón flotante, el objeto se actualiza.
+
+    Sin embargo aquí me estoy encontrando un problema y es que parece que cuando hacemos Intent.putExtra() no estamos pasando una
+    referencia al objeto sino sólo la información que tiene el objeto, así cuando intento actualizar los datos del objeto para que los cambios sean permanentes, esto no ocurre.
+
+    Así que de momento, los cambios que se hacen en el activity 1 no son permanentes. Veremos más adelante si lo puedo solucionar.
+
 
   
   

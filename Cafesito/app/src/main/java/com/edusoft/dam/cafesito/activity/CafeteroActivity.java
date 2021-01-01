@@ -47,7 +47,7 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
         ImageButton buttonBackArrow;
 
     //Variables GLOBALes
-    Cafetero mCafetero;
+    Cafetero cafeteroElegido;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,10 +81,10 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
 
         //Discrimina si el Cafetero estaba en la lista o se ha creado pulsando el botón crear
         if(recogerIntent()){
-            Log.d(TAG, "onCreate: VIEJO" + mCafetero.toString());
+            Log.d(TAG, "onCreate: VIEJO" + cafeteroElegido.toString());
             setCafeteroProperties();
         }else{
-            Log.d(TAG, "onCreate: NUEVO" + mCafetero.toString());
+            Log.d(TAG, "onCreate: NUEVO" + cafeteroElegido.toString());
         }
 
 
@@ -97,10 +97,10 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
      *
      */
     private void setCafeteroProperties() {
-        String nombreCompleto = mCafetero.getNombreCompleto();
-        String numCafe = mCafetero.getNumCafe().toString();
-        String mv = mCafetero.getMv();
-        String tipoCafe = mCafetero.getTipoCafe();
+        String nombreCompleto = cafeteroElegido.getNombreCompleto();
+        String numCafe = cafeteroElegido.getNumCafe().toString();
+        String mv = cafeteroElegido.getMv();
+        String tipoCafe = cafeteroElegido.getTipoCafe();
 
 
         //NO EDITABLES
@@ -122,7 +122,7 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
      */
     private Boolean recogerIntent() {
         if(getIntent().hasExtra("com.edusoft.dam.cafesito.cafetero_old")){
-             mCafetero = getIntent().getParcelableExtra("com.edusoft.dam.cafesito.cafetero_old");
+             cafeteroElegido = getIntent().getParcelableExtra("com.edusoft.dam.cafesito.cafetero_old");
             return true;
         }else{
             return false;
@@ -193,8 +193,7 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
                 break;
             }
             case R.id.toolbar_back_arrow:{
-                Intent intent = new Intent(this,CafeteroListaActivity.class);
-                startActivity(intent);
+                finish();
                 break;
             }
 
@@ -236,11 +235,29 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
      *
      */
     private void saveCafeteroProperties() {
+        //se recoge input del usuario
+        String cafeteroName = editTextNombreToolBar.getText().toString();
+        String numCafe = editTextNumCafe.getText().toString();
+        String mv = editTextMv.getText().toString();
+        String tipoCafe = tipoCafeEditableLinedText.getText().toString();
+
+        Log.i(TAG, "saveCafeteroProperties: cafetero antes: " + cafeteroElegido.toString());
+
+        //se modifica el objeto
+        cafeteroElegido.setNombreCompleto(cafeteroName);
+        cafeteroElegido.setNumCafe(Integer.parseInt(numCafe));
+        cafeteroElegido.setMv(mv);
+        cafeteroElegido.setTipoCafe(tipoCafe);
+
+        Log.i(TAG, "saveCafeteroProperties: cafetero despues: " + cafeteroElegido.toString());
+
+
         //NO EDITABLES
-        textViewNombreToolBar.setText(editTextNombreToolBar.getText());
-        textViewNumCafe.setText(editTextNumCafe.getText());
-        textViewMv.setText(editTextMv.getText());
-        tipoCafeNonEditableLinedEditText.setText(tipoCafeEditableLinedText.getText());
+        //se actualiza la vista a partir del objeto modificado
+        textViewNombreToolBar.setText(cafeteroElegido.getNombreCompleto());
+        textViewNumCafe.setText(cafeteroElegido.getNumCafe().toString());
+        textViewMv.setText(cafeteroElegido.getMv());
+        tipoCafeNonEditableLinedEditText.setText(cafeteroElegido.getTipoCafe());
 
     }
 }
