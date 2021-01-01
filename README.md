@@ -78,12 +78,12 @@ Activities
     * OnCafeteroListener(custom): onCafeteroClick()
     
   #### Clase: métodos
-    * Activity: startActivity(); getActivity(); getIntent();
+    * Activity: startActivity(); getActivity(); getIntent(); finish();
     * Log: d(); i() ;
     * RecyclerView.ViewHolder: setText(); getAdapterPosition()
     * RecyclerView.Adapter<>: onCreateViewHolder(); onBindViewHolder(); getItemCount()
     * View: findViewById(); setOnClickListener(); getLineHeight(); getHeight(); onDraw(); setVisibility();setBackgroundColor();    setTextColor();
-    * ArrayList<>: get(); size()
+    * ArrayList<>: get(); size(); remove();
     * LayoutInflater: from(); inflate()
     * ViewGroup: getContext();
     * LinearLayoutManager
@@ -96,12 +96,14 @@ Activities
     * Paint: setStyle(); setSTrokeWidth(); setColor()
     * Canvas: drawLine()
     * TextView: getLineBounds()
+    * ItemTouchHelper.SimpleCallback: onSwiped()
+    * ItemTouchHelper: attachToRecyclerView();
 
     
   #### GUI Elements: atributo=valor
     * LinearLayout: orientation; weightSum; background; gravity
     * View
-    * TextView: lines; textSize; padding; textColor; textSize; layout_margin_start; setText()
+    * TextView: lines; textSize; padding; textColor; textSize; layout_margin_start; setText(); imeOptions="flagNoExtractUi"
     * RecyclerView: orientation; padding; layout_behaviour="@string/appbar_scrolling_view_behaviour"
     * CoordinatorLayout
     * AppBarLayout
@@ -116,6 +118,7 @@ Activities
       * stroke: width; color
       * corner: radius
       * solid: color;
+    
 
   
   #### Otros recursos usados
@@ -245,7 +248,16 @@ Activities
   
   ![demoCafesito1](https://media.giphy.com/media/eIXHsniyNp04pjPETN/giphy.gif)
   
+  #### Implementación de ItemTouchHelper (para borrar ítem del recyclerview al desplazarlo a un lado)
 
+    1. Instanciar una clase abstracta ItemTouchHelper.SimpleCallback pasandole como parámetros -> 0 y la dirección (mirar código)
+    2. Sobreescribir el método onSwipe() ejecutando el código que queramos (borrado de un ítem + actualización del adaptador)
+
+  #### Algunas notas sueltas
+
+    * Para volver terminar un activity usamos finish()
+    * Al añadir el atributo imeOptions y darle el valor flagNoExtractUi hace que no se tape la interfaz cuando estamos editando
+      un EditText con la pantalla en horizontal.
 
   
   

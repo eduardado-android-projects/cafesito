@@ -45,7 +45,8 @@
             android:textSize="20dp"
             android:visibility="visible"
             android:textStyle="italic"
-            android:focusable="false"/>
+            android:focusable="false"
+            />
 
         <!--EDIT MODE-->
         <com.edusoft.dam.cafesito.component.LinedEditText
@@ -59,7 +60,8 @@
             android:textSize="20dp"
             android:visibility="gone"
             android:hint="@string/hint_tipoCafe"
-            android:textStyle="italic"/>
+            android:textStyle="italic"
+            android:imeOptions="flagNoExtractUi"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/cafetero_fab"
