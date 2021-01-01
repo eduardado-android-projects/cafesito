@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/primario">
+
+    <View
+        android:layout_width="10dp"
+        android:layout_height="match_parent"/>
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_baseline_contact_phone_24"/>
+    <View
+        android:layout_width="10dp"
+        android:layout_height="match_parent"/>
+    <!--VIEW MODE-->
+    <TextView
+        android:id="@+id/mv_textView"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:textSize="20dp"
+        android:gravity="center_vertical"
+        android:textColor="@color/white"
+        android:visibility="visible"
+        android:focusable="false"/>
+    <!--EDIT MODE-->
+    <EditText
+        android:id="@+id/mv_editText"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/terciario"
+        android:textSize="20dp"
+        android:gravity="center_vertical"
+        android:textColor="@color/secundario"
+        android:visibility="gone"
+        android:hint="@string/hint_mv"/>
+
+</LinearLayout>

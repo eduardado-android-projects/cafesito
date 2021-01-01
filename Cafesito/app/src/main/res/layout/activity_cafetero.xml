@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.CafeteroActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary">
+            <include layout="@layout/layout_cafetero_toolbar"/>
+
+        </Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <include layout="@layout/layout_cafetero_num_cafe" />
+
+    <include layout="@layout/layout_cafetero_mv" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@color/secundario" />
+
+    <!--VIEW MODE-->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent">
+
+        <com.edusoft.dam.cafesito.component.LinedEditText
+            android:id="@+id/tipoCafe_LinedEditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/primario"
+            android:gravity="top"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:visibility="visible"
+            android:textStyle="italic"
+            android:focusable="false"/>
+
+        <!--EDIT MODE-->
+        <com.edusoft.dam.cafesito.component.LinedEditText
+            android:id="@+id/tipoCafe_EditableLinedEditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/terciario"
+            android:gravity="top"
+            android:padding="10dp"
+            android:textColor="@color/secundario"
+            android:textSize="20dp"
+            android:visibility="gone"
+            android:hint="@string/hint_tipoCafe"
+            android:textStyle="italic"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/cafetero_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="183dp"
+            android:layout_gravity="bottom|center"
+            android:src="@drawable/ic_baseline_edit_24"
+            android:layout_margin="8dp"/>
+
+    </FrameLayout>
+
+
+
+
+</LinearLayout>

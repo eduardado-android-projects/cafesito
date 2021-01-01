@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:orientation="horizontal"
+    android:weightSum="100"
+    android:background="@color/primario"
+    android:gravity="center_vertical">
+
+    <!--MODO VIEW-->
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="10"
+        android:visibility="visible">
+
+        <ImageButton
+            android:id="@+id/toolbar_back_arrow"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_baseline_back_arrow_24"
+            android:background="@drawable/rounded_green"
+            android:layout_centerInParent="true"
+
+            />
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/toolbar_textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="85"
+        android:textColor="@color/white"
+        android:layout_marginStart="10dp"
+        android:textSize="20dp"
+        android:visibility="visible"
+        android:focusable="false"/>
+
+    <!--MODO EDIT-->
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="10"
+        android:visibility="gone">
+
+        <ImageButton
+            android:id="@+id/toolbar_check"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_baseline_check_24"
+            android:background="?attr/selectableItemBackground"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/toolbar_editText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="85"
+        android:textColor="@color/secundario"
+        android:layout_marginStart="10dp"
+        android:textSize="20dp"
+        android:visibility="gone"
+        android:background="@color/terciario"
+        android:padding="2dp"
+        android:hint="@string/hint_nombre"/>
+
+</LinearLayout>
