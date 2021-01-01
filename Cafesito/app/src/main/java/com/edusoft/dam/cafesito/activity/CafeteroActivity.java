@@ -1,6 +1,9 @@
 package com.edusoft.dam.cafesito.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -84,7 +87,7 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
             Log.d(TAG, "onCreate: VIEJO" + cafeteroElegido.toString());
             setCafeteroProperties();
         }else{
-            Log.d(TAG, "onCreate: NUEVO" + cafeteroElegido.toString());
+            Log.d(TAG, "onCreate: Nuevo cafetero");
         }
 
 
@@ -125,6 +128,8 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
              cafeteroElegido = getIntent().getParcelableExtra("com.edusoft.dam.cafesito.cafetero_old");
             return true;
         }else{
+            cafeteroElegido = new Cafetero(); //esto es necesario para que el método saveCafeteroProperties(); no haga un nullPointerException.. es necesario usar
+            cambiaModo();
             return false;
         }
 
@@ -260,4 +265,8 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
         tipoCafeNonEditableLinedEditText.setText(cafeteroElegido.getTipoCafe());
 
     }
+
+
+
+
 }
