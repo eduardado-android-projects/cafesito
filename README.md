@@ -127,6 +127,13 @@ Activities
     * values.xml (acceso a través de ?attr) & (acceso a través de "@string/appbar_scrolling...)
     * AndroidManifest.xml
 
+  #### Room Persistence Library
+    * @Entity(tableName = "NombreTabla")
+    * @ColumnInfo(name = "NombreColumna")
+    * @Ignore
+    * @PrimaryKey(autoGenerate = "true")
+    * @NonNull
+
   
 </details>
 
@@ -258,6 +265,19 @@ Activities
     * Para volver terminar un activity usamos finish()
     * Al añadir el atributo imeOptions y darle el valor flagNoExtractUi hace que no se tape la interfaz cuando estamos editando
       un EditText con la pantalla en horizontal.
+
+  #### Comienzo rama-room para implementar la persistencia de datos
+
+  ##### Establecer los Entitities
+    1. Añadir dependencias de Room
+    2. Hacer la POJO clas como Entity
+    3. Asignar un campo para la primary key(asignando autoincrement) y poner sus getters/setters
+    4. Añadimos los campos que queremos añadir a la tabla de SQLite
+    5. Eliminar constructor y todos los métodos de Parceable y volver a implementarlos con el nuevo atributos (incluidos los toString)
+    6. Ignorar el constructor vacío
+    7. @NonNull para añadir campos que no permitan valores nulos
+
+  
 
   
   
