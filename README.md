@@ -242,6 +242,9 @@ Activities
     referencia al objeto sino sólo la información que tiene el objeto, así cuando intento actualizar los datos del objeto para que los cambios sean permanentes, esto no ocurre.
 
     Así que de momento, los cambios que se hacen en el activity 1 no son permanentes. Veremos más adelante si lo puedo solucionar.
+  
+  ![demoCafesito1](https://media.giphy.com/media/eIXHsniyNp04pjPETN/giphy.gif)
+  
 
 
   
