@@ -277,7 +277,35 @@ Activities
     6. Ignorar el constructor vacío
     7. @NonNull para añadir campos que no permitan valores nulos
 
-  ##### prueba cambio rama
+  ##### Persistencia de Datos con Room usando la arquitectura recomendada
+  
+  <details>
+    <summary>¿Qué es Room?</summary>
+    <p>Es una capa de un nivel mayor de abstracción, que permite usar bases de datos SQLite. Se compone a su vez de 3 componentes:</p>
+    <p>DataBase class: encapsula la base de datos y permite acceder a ella</p>
+    <p>Entities: son clases de Java adaptadas para representar las tablas de la base de datos</p>
+    <p>Data Access Objects(DAO): clases que implementan los métodos que nuestra app ejecutará para usar la base de datos.</p>.
+    <a href="https://imgur.com/pvUYWK8"><img src="https://i.imgur.com/pvUYWK8.png" title="source: imgur.com" width="400" height="400" /></a>
+  </details>
+  <details>
+    <summary>Arquitectura recomendada</summary>
+    <p>Además del uso de la capa de abstracción de Room se recomienda añadir 2 capas más:</p>
+    <p>LiveData-> Modelo de datos que utiliza el patron observer. Est patrón es como un listener pero de base de datos. Siempre tiene la versión de la base de datos</p>
+    <p>Repository-> Es una capa que permite que la aplicación obtenga datos no solo de la base de datos sino también de servidores web</p>
+    <a>
+      <img src="https://developer.android.com/codelabs/android-training-livedata-viewmodel/img/fd28069527c8d615.png" width="400"/>
+    </a>
+  </br>
+    <a href="https://developer.android.com/codelabs/android-training-livedata-viewmodel#0" title="Más información">Más información sobre la Arquitectura recomendada</a>
+  </details>
+
+  ##### Implementación
+  
+    1. Añadir dependencias a build.gradle
+  [RoomDependencies](https://developer.android.com/training/data-storage/room#java)
+
+    2. Prueba 
+
 
   
 
