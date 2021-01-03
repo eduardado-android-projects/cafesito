@@ -1,39 +1,12 @@
-# multimedia-practicas
+# Cafesito
 
-Repositorio de prácticas del segundo trimestre
+Una app de android para reciprocar cafés.
 
-## PRÁCTICAS
-
-1. Persistencia de datos con SQLite
-
-
-## Práctica 1: Persistencia de datos con SQLite
-<details>
-  <summary>Instrucciones</summary>
-  <p>
-    Tenéis que una aplicación para gestionar una lista de clientes de cualquier tipo con campos: Nombre y Apellidos, email, teléfono fijo y móvil.
-1.- Se podrá visualizar todos los elementos de la lista en un ListView. Desde el ListView se podrá seleccionar un elemento para mostrarlo en detalle, modificarlo, o borrarlo.
-2.- Se podrá insertar un elemento y borrar toda la lista.
-3.- Los elementos se guardarán en una base de datos SQLite.
-4.- Al salir se guardarán un dato cualquiera, la fecha y la hora en key-values, que se mostrarán al arrancar la aplicación en un Toast.
-
-Sobre el punto 4, dentro de la persistencia de datos cómo habréis podido ver en el tercer enlace se encuentra el almacenamiento clave/valor de las preferencias de la aplicación. Haciendo uso de las preferencias de la aplicación y de los eventos de una actividad (https://multimedia.codeandcoke.com/_detail/apuntes:activity_lifecycle.png?id=apuntes%3Aandroid) debéis de guardar la fecha y hora al cerrar la actividad (onclose) y mostrar el toast al iniciar (oncreate). La primera vez que no tenga datos, podéis escribir o la fecha y hora actual o un mensaje de "Primera vez".
-  </p>
-  <p>https://developer.android.com/training/data-storage/sqlite</p>
-  <p>http://www.hermosaprogramacion.com/2014/10/android-sqlite-bases-de-datos/</p>
-  <p>http://developer.android.com/intl/es/training/basics/data-storage/index.html</p>
-  <p>http://www.developandsys.es/shared-preferences/</p>
-</details>
+## Brainstorming antes de comenzar
 
 <details>
-  <summary>Borrador CafesitoApp</summary>
+  <summary>Mostrar borrador</summary>
 
-### CafesitoApp
-
-#### Objetivo
-Una aplicación para que no olvidar devolver ese cafelito al que nos invitaron
-
-#### Estructura Datos
 
 Clase Cafetero
   - NombreCompleto (Nombre, apellidos, sobrenombre etc.)
@@ -41,7 +14,6 @@ Clase Cafetero
   - numCafe: Integer (nº de cafés que le debemos)
   - tipoCafe (descripcion de cómo le gusta el café)
 
-#### Activities
 Activities
 1. Lista de cafeteros: Nombre-----NumCafe (tlf no aparece)->ListaCafeteros
     - Botón flotante: nuevo cafetero
@@ -56,17 +28,15 @@ Activities
     -MODO EDICIÓN: Modo edición-> Al hacer doble click nos deja editar todos los campos
 3. EliminarTodos: sale un botón rojo que, al darle, se eliminan todos los cafeteros
 
-#### Aspecto
   Colores marrones
 
-#### Compatibilidad
   Desde 8.0 (Oreo)
 
-#### Idea
   Si desplazo a la izquierda disminuye
   Si desplazo a la derecha aumenta
   Si es cero y desplazo a la izquierda elimino ítem
   Si pantalla principal, en el toolbar hay un botón que lleva a actividad 3 (ElimintarTodos)
+  
 </details>
 
 <details>
