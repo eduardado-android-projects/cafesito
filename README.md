@@ -232,6 +232,22 @@ Activities
     * Para volver terminar un activity usamos finish()
     * Al añadir el atributo imeOptions y darle el valor flagNoExtractUi hace que no se tape la interfaz cuando estamos editando
       un EditText con la pantalla en horizontal.
+  
+  #### Persistencia de Datos con SQLite
+
+    Resumen: Una vez hemos terminado la GUI y comprobado que funciona correctamente con datos estáticos, vamos implementar la persistencia de datos con SQLite.
+
+    Nota: Cabe destacar que, debido a que en nuestra aplicación la VISTA y la EDICIÓN ocurren en el mismo activity, dicho activity
+    tiene que:
+      * Tener dos estados posibles: esto lo hicimos guardando en una variable estática el modo en el que se encuentra, además de 
+      activando/desactivando el modo edición(mirar código)
+      * Controlar si, al instanciarse CafeteroActivity estamos creando un nuevo Cafetero o estamos modificando uno existente. Esto lo hicimos discriminando el Intent, filtrando por el Extra (mirar código)
+      * La primera columna es nº 0!: A diferencia de otras bases de datos como MySQL u Oracle, al usar cursores para obtener los registros de las tablas, la primera columna tiene un índice 0. Esto es muy importante.
+    
+    Implementación 
+      1. Creamos una clase que herede de SQLiteOpenHelper
+      2. Generamos un constructor que sólo recibirá Context como parámetro y al que le pasamos null como CursorFactory. 
+      3. 
 
   
   

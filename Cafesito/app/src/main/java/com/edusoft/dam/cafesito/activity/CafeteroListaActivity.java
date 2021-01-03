@@ -77,6 +77,12 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
 
     }
 
+    /*@Override
+    protected void onResume() { //queremos que cuando vuelva a retomar el activity vuelva a cargar los Cafeteros de la base de datos y refresque el adaptador
+        super.onResume();
+        cargaArrayConBaseDeDatos();
+    }*/
+
     private void initItemTouchHelper() {
         //instancia una clase abstracta y con ella hay que sobreescribir un par de métodos
          ItemTouchHelper.SimpleCallback  simpleCallback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.RIGHT) { //hay que pasarle 0 y la direccion que queremos implementar
@@ -99,7 +105,10 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
      * @param cafetero
      */
     private void borrarCafetero(Cafetero cafetero) {
-        mCafeteros.remove(cafetero);
+        dataBaseHelper.deleteCafeteroFromDB(cafetero); //primero se borra de la base de datos
+
+        mCafeteros.remove(cafetero); //después se borra del array
+
         mCafeteroRecyclerAdapter.notifyDataSetChanged(); //actualiza el adaptador con nuevos datos
     }
 
@@ -191,12 +200,15 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
      */
     private void cargaArrayConBaseDeDatos(){
 
+        //mCafeteros = new ArrayList<Cafetero>(); //antes de cargar el array, lo resetea
+
         Cursor cursor = dataBaseHelper.getAllCafeteros(); //obtiene todos los registros de la base de datos
 
         while(cursor.moveToNext()){ //extrae, de todos los registros, los campos que nos interesan
 
             Cafetero cafeteroDB = new Cafetero(); //creo un cafetero
 
+            cafeteroDB.setId(cursor.getInt(0)); //importante en SQLite sí hay columna 0 a dif
             cafeteroDB.setNombreCompleto(cursor.getString(1)); //meto en el todos los datos del primer registro (el id no lo guardo)
             cafeteroDB.setMv(cursor.getString(2));
             cafeteroDB.setTipoCafe(cursor.getString(3));
@@ -208,6 +220,8 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
         mCafeteroRecyclerAdapter.notifyDataSetChanged();// avisa al adapter que los datos han cambiado para que refresque la lista
 
     }
+
+
 
 
 

@@ -101,14 +101,28 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase = getWritableDatabase();
         String query = "SELECT * FROM " + NOMBRE_TABLA;
 
-        Cursor cursor = sqLiteDatabase.rawQuery(query,null);
+        Cursor cursor = sqLiteDatabase.rawQuery(query,null); // ojo estamos usando rawQuery() para el select
 
         return cursor;
     }
 
-    public void deleteCafetero(){
+    public void deleteCafeteroFromDB(Cafetero cafetero){
+        String id = cafetero.getId().toString();
+
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase(); //TODO realmente hace falta instanciar esto cada vez que se hace una operación?
+        //DELETE FROM TABLE WHERE X = 'Y' AND Z ='W'
+        String deleteQuery = "DELETE FROM " + NOMBRE_TABLA + " WHERE " +
+                COL_0 + " = '" + id + "'";
+
+        Log.d(TAG, "deleteCafetero: deleteQuery : " + deleteQuery);
+
+        sqLiteDatabase.execSQL(deleteQuery); //TODO imagino que podremos usar el retorno de este método para confirmar que se han insertado datos en la base de dtos
+
+
+        //sqLiteDatabase.delete(NOMBRE_TABLA,"id = ?",new String[]{id}); //TODO probar este luego , que este si devuelve el nº de registros afectados por el delete
 
     }
+
 
     public void updateCafetero(){
         /*
