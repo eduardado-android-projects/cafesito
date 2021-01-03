@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -19,6 +20,9 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
     private static final Integer MODO_EDICION_ACTIVADO = 1;
     private static final Integer MODO_EDICION_DESACTIVADO = 0;
     private Integer modo;
+
+    // Funcionamento memoria
+    private Boolean isNewCafetero; //si el usuario está creando un nuevo Cafetero
 
     //debug
     private static final String TAG = "CafeteroActivity";
@@ -76,20 +80,30 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
 
 
 
-        //Discrimina si el Cafetero estaba en la lista o se ha creado pulsando el botón crear
-        recogerIntent();
+        isNewCafetero = recogerIntent(); //recoge intent
 
-        //cada vez que disableEditMode() es desactivado se guarda el objeto mCafetero en la base de datos.
-        /*
-        pero cómo discrimino si es viejo o nuevo?
-         */
+        if(isNewCafetero){
+            insertGlobalCafetero();
+        }else{
+            updateCafeteroWithGlobalCafetero();
+        }
+
+
 
 
 
     }
 
+    private void insertGlobalCafetero() {
+        Log.d(TAG, "insertGlobalCafetero: Insertando" + mCafetero.toString());
+    }
 
-    /**
+    private void updateCafeteroWithGlobalCafetero() {
+        Log.d(TAG, "updateCafeteroWithGlobalCafetero: actualizando" + mCafetero.toString());
+    }
+
+
+    /** Rellena la GUI (tanto modo edición como view) con los datos del cafeteroGlobal
      *
      */
     private void populateGUIwithGlobalCafetero() {
@@ -120,25 +134,20 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
      * @return si viene de la lista de cafeteros, devuelve true de lo contrario devuelve false
      */
     private Boolean recogerIntent() {
-        Cafetero cafetero;
+        Log.d(TAG, "recogerIntent: Intent Recogido");
+
 
         if(getIntent().hasExtra("com.edusoft.dam.cafesito.cafetero_old")){
-             mCafetero = getIntent().getParcelableExtra("com.edusoft.dam.cafesito.cafetero_old");
+            mCafetero = getIntent().getParcelableExtra("com.edusoft.dam.cafesito.cafetero_old");
             populateGUIwithGlobalCafetero();
-            return true;
-        }else{ // si no recibe un objeto, sino que viene del botón flotante, la actividad se inicia en modo edición
+            return false;
+        }else if (getIntent().hasExtra("com.edusoft.dam.cafesito.cafetero_new")){
             mCafetero = new Cafetero();
             enableEditMode();
-            /*
-              TODO el modo edición debería tener 2 vertientes,
-                1) una si estamos editando una cafetero que ya existe
-                    - update
-                2) si estamos creando un nuevo cafetero
-                    - insert
-             */
-            return false;
+            return true;
+        }else{
+            return null;
         }
-
 
     }
 
@@ -169,6 +178,7 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
     private void disableEditMode(){
 
         updateView();
+
 
         modo = MODO_EDICION_DESACTIVADO;
 
