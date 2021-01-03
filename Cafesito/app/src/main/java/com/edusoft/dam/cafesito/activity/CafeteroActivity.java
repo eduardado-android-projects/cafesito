@@ -1,11 +1,8 @@
 package com.edusoft.dam.cafesito.activity;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -30,7 +27,6 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
     //VIEW MODE
         //GUI
         TextView textViewNombreToolBar;
-        TextView textViewNumCafe;
         TextView textViewMv;
         LinedEditText tipoCafeNonEditableLinedEditText;
         //variables
@@ -50,16 +46,18 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
         ImageButton buttonBackArrow;
 
     //Variables GLOBALes
-    Cafetero cafeteroElegido;
+    Cafetero mCafeteroElegido;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cafetero);
 
+        //modo por defecto
+        modo = MODO_EDICION_DESACTIVADO;
+
         //VIEW MODE
         textViewNombreToolBar = findViewById(R.id.toolbar_textView);
-        textViewNumCafe = findViewById(R.id.num_cafe_editText);
         textViewMv = findViewById(R.id.mv_textView);
         tipoCafeNonEditableLinedEditText = findViewById(R.id.tipoCafe_LinedEditText);
 
@@ -78,14 +76,11 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
         buttonBackArrow.setOnClickListener(this);
 
 
-        //modo por defecto
-        modo = MODO_EDICION_DESACTIVADO;
-
 
         //Discrimina si el Cafetero estaba en la lista o se ha creado pulsando el botón crear
         if(recogerIntent()){
-            Log.d(TAG, "onCreate: VIEJO" + cafeteroElegido.toString());
-            setCafeteroProperties();
+            Log.d(TAG, "onCreate: VIEJO" + mCafeteroElegido.toString());
+            setCafeteroValues();
         }else{
             Log.d(TAG, "onCreate: Nuevo cafetero");
         }
@@ -95,41 +90,45 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
-    /** Toma el objeto Cafetero Global y actualiza todos los campos de la clase tanto los EDIT MODE
-     *  como los VIEW mode
+    /**
      *
      */
-    private void setCafeteroProperties() {
-        String nombreCompleto = cafeteroElegido.getNombreCompleto();
-        String numCafe = cafeteroElegido.getNumCafe().toString();
-        String mv = cafeteroElegido.getMv();
-        String tipoCafe = cafeteroElegido.getTipoCafe();
+    private void setCafeteroValues() {
+
+        //Obtiene los datos del objeto
+        String nombreCompleto = mCafeteroElegido.getNombreCompleto();
+        String numCafe = mCafeteroElegido.getNumCafe().toString();
+        String mv = mCafeteroElegido.getMv();
+        String tipoCafe = mCafeteroElegido.getTipoCafe();
 
 
-        //NO EDITABLES
+        //WIDGES VISIBLES EN MODO VIEW
         textViewNombreToolBar.setText(nombreCompleto);
-        textViewNumCafe.setText(numCafe);
         textViewMv.setText(mv);
         tipoCafeNonEditableLinedEditText.setText(tipoCafe);
 
-        //EDITABLES
+        //WIDGETS VISIBLES EN MODO EDIT
         editTextNombreToolBar.setText(nombreCompleto);
-        editTextNumCafe.setText(numCafe);
         editTextMv.setText(mv);
         tipoCafeEditableLinedText.setText(tipoCafe);
 
+        //WIDGET SIEMPRE VISIBLE
+        editTextNumCafe.setText(numCafe);
     }
 
     /** Recoge el Intent que venga de otra Activity
+     *  Asigna a la variable Global
      * @return si viene de la lista de cafeteros, devuelve true de lo contrario devuelve false
      */
     private Boolean recogerIntent() {
+
         if(getIntent().hasExtra("com.edusoft.dam.cafesito.cafetero_old")){
-             cafeteroElegido = getIntent().getParcelableExtra("com.edusoft.dam.cafesito.cafetero_old");
+             mCafeteroElegido = getIntent().getParcelableExtra("com.edusoft.dam.cafesito.cafetero_old");
+             // Aclaración: getParcelableExtra no es una referencia al objeto sino es un nuevo objeto con la información.
             return true;
         }else{
-            cafeteroElegido = new Cafetero(); //esto es necesario para que el método saveCafeteroProperties(); no haga un nullPointerException.. es necesario usar
-            cambiaModo();
+            mCafeteroElegido = new Cafetero(); //esto es necesario para que el método saveCafeteroProperties(); no haga un nullPointerException.. es necesario usar
+            cambiaModo(); //cambia a modo edición
             return false;
         }
 
@@ -137,11 +136,10 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void enableEditMode(){
+        modo = MODO_EDICION_ACTIVADO;
+
         textViewNombreToolBar.setVisibility(View.GONE);
         editTextNombreToolBar.setVisibility(View.VISIBLE);
-
-        textViewNumCafe.setBackgroundColor(getResources().getColor(R.color.terciario));
-        textViewNumCafe.setTextColor(getResources().getColor(R.color.secundario));
 
         textViewMv.setVisibility(View.GONE);
         editTextMv.setVisibility(View.VISIBLE);
@@ -155,15 +153,13 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
         buttonNumCafeDown.setVisibility(View.VISIBLE);
         buttonNumCafeUp.setVisibility(View.VISIBLE);
 
-        modo = MODO_EDICION_ACTIVADO;
     }
 
     private void disableEditMode(){
+        modo = MODO_EDICION_DESACTIVADO;
+
         textViewNombreToolBar.setVisibility(View.VISIBLE);
         editTextNombreToolBar.setVisibility(View.GONE);
-
-        textViewNumCafe.setBackgroundColor(getResources().getColor(R.color.primario));
-        textViewNumCafe.setTextColor(getResources().getColor(R.color.white));
 
         textViewMv.setVisibility(View.VISIBLE);
         editTextMv.setVisibility(View.GONE);
@@ -177,11 +173,11 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
         buttonNumCafeDown.setVisibility(View.INVISIBLE);
         buttonNumCafeUp.setVisibility(View.INVISIBLE);
 
-        modo = MODO_EDICION_DESACTIVADO;
 
     }
 
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
         switch(v.getId()){
@@ -210,7 +206,7 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void cambiaNumCafe(Integer i) {
-        Integer numCafe = Integer.parseInt(textViewNumCafe.getText().toString());
+        Integer numCafe = Integer.parseInt(editTextNumCafe.getText().toString());
         String numCafeString;
 
         if(numCafe + i >= 0){
@@ -220,49 +216,58 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
         numCafeString = numCafe.toString();
 
         editTextNumCafe.setText(numCafeString);
-        textViewNumCafe.setText(numCafeString);
 
 
     }
 
+    /** Cambia el Activity de modo VIEW a mode EDIT y viceversa
+     *
+     */
     private void cambiaModo() {
-        if(modo == MODO_EDICION_DESACTIVADO){
+        if(modo.equals(MODO_EDICION_DESACTIVADO)){
             enableEditMode();
             floatingActionButton.setImageResource(R.drawable.ic_baseline_check_circle_24);
         }else{
-            saveCafeteroProperties();
+            saveCafeteroProperties(); //guardado de datos
             disableEditMode();
             floatingActionButton.setImageResource(R.drawable.ic_baseline_edit_24);
         }
     }
 
-    /** Refresca los datos de los campos VIEW MODE con los widget EDIT MODE
+    /** Algunos de los widget en modo EDIT no son los mismos que los widget en VIEW MODE
+     *  Este método se encarga de que el contenido de los widget en EDIT MODE actualice
+     *  los widget que se ven en VIEW MODE
      *
      */
     private void saveCafeteroProperties() {
+
         //se recoge input del usuario
         String cafeteroName = editTextNombreToolBar.getText().toString();
         String numCafe = editTextNumCafe.getText().toString();
         String mv = editTextMv.getText().toString();
         String tipoCafe = tipoCafeEditableLinedText.getText().toString();
 
-        Log.i(TAG, "saveCafeteroProperties: cafetero antes: " + cafeteroElegido.toString());
+        Log.i(TAG, "saveCafeteroProperties: cafetero antes: " + mCafeteroElegido.toString());
 
-        //se modifica el objeto
-        cafeteroElegido.setNombreCompleto(cafeteroName);
-        cafeteroElegido.setNumCafe(Integer.parseInt(numCafe));
-        cafeteroElegido.setMv(mv);
-        cafeteroElegido.setTipoCafe(tipoCafe);
+        //se modifica el objeto global
+        mCafeteroElegido.setNombreCompleto(cafeteroName);
+        mCafeteroElegido.setNumCafe(Integer.parseInt(numCafe));
+        mCafeteroElegido.setMv(mv);
+        mCafeteroElegido.setTipoCafe(tipoCafe);
 
-        Log.i(TAG, "saveCafeteroProperties: cafetero despues: " + cafeteroElegido.toString());
+        Log.i(TAG, "saveCafeteroProperties: cafetero despues: " + mCafeteroElegido.toString());
 
 
-        //NO EDITABLES
         //se actualiza la vista a partir del objeto modificado
-        textViewNombreToolBar.setText(cafeteroElegido.getNombreCompleto());
-        textViewNumCafe.setText(cafeteroElegido.getNumCafe().toString());
-        textViewMv.setText(cafeteroElegido.getMv());
-        tipoCafeNonEditableLinedEditText.setText(cafeteroElegido.getTipoCafe());
+        textViewNombreToolBar.setText(mCafeteroElegido.getNombreCompleto());
+        editTextNumCafe.setText(mCafeteroElegido.getNumCafe().toString());
+        textViewMv.setText(mCafeteroElegido.getMv());
+        tipoCafeNonEditableLinedEditText.setText(mCafeteroElegido.getTipoCafe());
+
+
+
+
+
 
     }
 

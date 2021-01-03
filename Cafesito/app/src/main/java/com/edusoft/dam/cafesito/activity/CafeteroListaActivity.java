@@ -129,15 +129,17 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
     }
 
     @Override
-    public void onCafeteroClick(Integer position) { //Manda Cafeteros de la lista
+    public void onCafeteroClick(Integer position) { //Manda Cafeteros de la lista al pulsar algún item del RecyclerView
         Log.d(TAG, "onCafeteroClick: clicaste en el cafetero: " + mCafeteros.get(position).toString());
         Intent intent = new Intent(this,CafeteroActivity.class);
+        //Los objetos tienen que implementar la interfaz Parcelable para poder mandarse entre Activities
         intent.putExtra("com.edusoft.dam.cafesito.cafetero_old", mCafeteros.get(position)); //usamos el paquete único de la app + nombre del objeto (buenas prácticas por si recibimos mismo objeto de otra app)
+        //Aclaración: No estoy seguro de si
         startActivity(intent);
     }
 
     @Override
-    public void onClick(View v) { // lanza una nueva actividad
+    public void onClick(View v) { // Sólo lo estoy usando con el botón flotante
         Intent intent = new Intent(this, CafeteroActivity.class);
         startActivity(intent);
     }
