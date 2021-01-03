@@ -2,6 +2,10 @@
 
 Una app de android para reciprocar cafés.
 
+## Ramas
+  * main: persistencia de datos con SQLite
+  * rama-room: persistencia de datos con Room + Arquitectura recomendada (Repository + LiveData) 
+
 ## Brainstorming antes de comenzar
 
 <details>
