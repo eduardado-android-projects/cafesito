@@ -97,7 +97,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public void deleteCafeteroFromDB(Cafetero cafetero){
+    public Boolean deleteCafeteroFromDB(Cafetero cafetero){
+        Boolean borrarOno;
+
         String id = cafetero.getId().toString();
 
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
@@ -107,16 +109,19 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         Log.d(TAG, "deleteCafetero: deleteQuery : " + deleteQuery);
 
-        sqLiteDatabase.execSQL(deleteQuery);
+        //sqLiteDatabase.execSQL(deleteQuery);
 
+        //Este método evuelve el nº de registros afectados por el delete, lo cual es útil para informar al usuario
+        Integer resultadoDelete = sqLiteDatabase.delete(NOMBRE_TABLA,"id = ?",new String[]{id});
 
-        //sqLiteDatabase.delete(NOMBRE_TABLA,"id = ?",new String[]{id}); //TODO probar este luego , que este si devuelve el nº de registros afectados por el delete
+        return (resultadoDelete > -1) ?true:false;
+
 
     }
 
 
-    public void updateCafetero(){
-        /*
+    public void updateCafetero(Cafetero oldCafetero, Cafetero newCafetero){
+         /*
         private  static final String COL_1 = "NombreCompleto";
     private  static final String COL_2 = "Mv";
     private  static final String COL_3 = "TipoCafe";
@@ -132,8 +137,22 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             WHERE
                 COL_0 = ID
          */
-
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+
+        String updateQuery = "UPDATE " + NOMBRE_TABLA + " SET "         +
+                COL_1 + "='" + newCafetero.getNombreCompleto() + "',"   +
+                COL_2 + "='" + newCafetero.getMv()             + "',"   +
+                COL_3 + "='" + newCafetero.getTipoCafe() +       "',"   +
+                COL_4 + "='" + newCafetero.getNumCafe() +        "'" +
+                " WHERE "    +
+                COL_0 + "='"+ oldCafetero.getId().toString() + "'";
+
+        Log.d(TAG, "updateCafetero: update query" + updateQuery);
+
+        sqLiteDatabase.execSQL(updateQuery);
+
+
+
 
     }
 }

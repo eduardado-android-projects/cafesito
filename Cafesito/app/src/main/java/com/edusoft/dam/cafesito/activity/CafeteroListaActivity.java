@@ -181,7 +181,13 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
      */
     private void borrarCafetero(Cafetero cafetero) {
 
-        dataBaseHelper.deleteCafeteroFromDB(cafetero); //primero se borra de la base de datos
+        Boolean resultadoDelete = dataBaseHelper.deleteCafeteroFromDB(cafetero); //primero se borra de la base de datos
+            if(resultadoDelete){
+                String infoUser = (cafetero.getNombreCompleto() != null) ?cafetero.getNombreCompleto(): "";
+                Toast.makeText(this, "Se borró permanentemente a " + infoUser, Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(this, "Algo raro sucedió borrando al cafetero.. :(", Toast.LENGTH_SHORT).show();
+            }
 
         mCafeteros.remove(cafetero); //después se borra del array
 
@@ -189,7 +195,7 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
     }
 
 
-    /** Carga la base de datos con 20 Cafeteros
+    /** Carga la base de datos con 5 Cafeteros
      *  Ideal correr este método la primera vez que se instala la aplicación solamente
      */
     private void precargaDemoBaseDatos(){
@@ -213,12 +219,10 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
      */
     private void cargaArrayConBaseDeDatos(){
 
-        //todo NO ESTOY OBTENIENDO TODOS LOS REGISTROS EN EL CURSOR
         Cursor cursor = dataBaseHelper.getAllCafeteros(); //obtiene todos los registros de la base de datos
 
         Integer eltosBD = cursor.getCount();
 
-        Log.d(TAG, "cargaArrayConBaseDeDatos: El cursor dice que hay " + eltosBD);
 
         mCafeteros.clear();
         while(cursor.moveToNext()){ //extrae, de todos los registros, los campos que nos interesan

@@ -57,10 +57,11 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
 
     //Variables Globales
     private Cafetero mCafetero;
-
+    private Cafetero mCafeteroViejo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cafetero);
 
@@ -101,8 +102,8 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
             enableEditMode();
 
         }else{
-            Cafetero cafeteroViejo = getIntent().getParcelableExtra("com.edusoft.dam.cafesito.cafetero_old");
-            populateGUI(cafeteroViejo);
+            mCafeteroViejo = getIntent().getParcelableExtra("com.edusoft.dam.cafesito.cafetero_old");
+            populateGUI(mCafeteroViejo);
         }
 
 
@@ -261,8 +262,10 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
                 Toast.makeText(this, "Cafetero guardado" + infoUsuario , Toast.LENGTH_SHORT).show();
             }
             finish();
-        }else{
+        }else{ //si hemos llegado aquí pulsando un cafetero que ya existía, cuando pulsamos el botón de guardado queremos que se modifique el registro de la base de datos
             Log.d(TAG, "guardaPermanente: VIEJO CAFETERO");
+            dataBaseHelper.updateCafetero( mCafeteroViejo, mCafetero);
+            finish();//cuando termine se vuelve a la actividad inicial de lista
         }
 
         floatingActionButtonSave.setVisibility(View.GONE);//desaparece el botón
