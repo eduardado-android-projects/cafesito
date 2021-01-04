@@ -54,7 +54,7 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
         setContentView(R.layout.activity_cafetero_list);
 
 
-        //GUI, referencia
+        //GUI, referencias
         mRecyclerView = findViewById(R.id.recyclerView); //dentro de un Activity hay una referencia implícita a View. Puedo usar findViewById() directamente
         mListaCafeterosToolbar = findViewById(R.id.lista_cafeteros_toolbar);
         FloatingActionButton floatingActionButton = findViewById(R.id.cafetero_list_fab);
@@ -64,13 +64,13 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
         mCafeteros = new ArrayList<>();
 
         //base de datos
-        dataBaseHelper = new DataBaseHelper(this); // TODO el problema está aquí
+        dataBaseHelper = new DataBaseHelper(this);
 
 
         //implementaciones ordenadas
         initRecyclerView(); //configura el recyclerivew con el adaptador personalizado
-        separaItems(); //para separar los items
-        initToolBar(); //para añadir un ToolBar personalizado
+        separaItems();      //para separar los items
+        initToolBar();      //para añadir un ToolBar personalizado
         initItemTouchHelper(); //para poder desplazar un ítem y borrarlo
 
         //BASE DE DATOS
@@ -80,6 +80,9 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
     }
 
 
+    /** Añade comportamiento a la interfaz al desplazar ítems del recyclerview
+     *
+     */
     private void initItemTouchHelper() {
         //instancia una clase abstracta y con ella hay que sobreescribir un par de métodos
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) { //hay que pasarle 0 y la direccion que queremos implementar
@@ -98,6 +101,9 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
     }
 
 
+    /** Carga un ToolBar personalizado (el Toolbar por defecto se ha desactivado en themes.xml
+     *
+     */
     private void initToolBar() {
         setSupportActionBar(mListaCafeterosToolbar);
         setTitle(R.string.titulo_toolbar_cafeteros);

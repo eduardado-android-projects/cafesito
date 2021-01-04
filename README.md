@@ -6,10 +6,9 @@ Una app de android para reciprocar cafés.
   * main: persistencia de datos con SQLite
   * rama-room: persistencia de datos con Room + Arquitectura recomendada (Repository + LiveData) 
 
-## Brainstorming antes de comenzar
 
 <details>
-  <summary>Mostrar borrador</summary>
+  <summary>Borrador de la app antes de comenzar</summary>
 
 
 Clase Cafetero
@@ -35,6 +34,8 @@ Activities
   Colores marrones
 
   Desde 8.0 (Oreo)
+
+  Ideas no implementadas
 
   Si desplazo a la izquierda disminuye
   Si desplazo a la derecha aumenta
@@ -72,6 +73,10 @@ Activities
     * TextView: getLineBounds()
     * ItemTouchHelper.SimpleCallback: onSwiped()
     * ItemTouchHelper: attachToRecyclerView();
+    * SQLiteOpenHelper: onCreate(); onUpgrade();
+    * SQLiteDatabase: getWritableDatabase(); insert(); rawQuery(); delete(); update()
+    * ContentValues: put()
+    * Cursor:
 
     
   #### GUI Elements: atributo=valor
@@ -135,7 +140,7 @@ Activities
     1. Desactivar el ActionBar por defecto: en themes.xml sustituir DarkActionBar por NoActionBar
     2. Seguir la documentacion de https://material.io/components/app-bars-top/android#using-top-app-bars
   
-  #### Implementar OnClickListener (buenas prácticas)
+  #### Implementar OnItemListener (buenas prácticas)
     Resumen: Definimos una interfaz, que será ejecutada por cada ítem cuando se click sobre él.
 
     Aclaración: Cada ítem del recyclerview es un ViewHolder
@@ -174,12 +179,11 @@ Activities
             onCafeteroListener.onCafeteroClick(getAdapterPosition());
         }
   ```
+#### Creación de activity nº 2 + mandar objetos entre activity1 y activity2(Cafetero Activity)
 
-  #### Creación de activity nº 2 + mandar objetos entre activity1 y activity2(Cafetero Activity)
-
-  Resumen: 
-    - Este activity mostrará los detalles de cada ítem. 
-    - Tendrá dos modos: Lectura y Escritura
+    - Resumen: 
+      - Este activity mostrará los detalles de cada ítem. 
+      - Tendrá dos modos: Lectura y Escritura
 
     1. Crear Empty Activity usando generandor de código(genera layout y lo añade a androidManifest.xml )
     2. Hacer el objeto Parcelable (añadir métodos + implementación)
@@ -196,7 +200,7 @@ Activities
   
   #### Crear el componente AppCompatEditText
 
-  Resumen: Crearemos un EditText personalizado, que tiene dibujadas líneas como si fuera papel de un cuaderno de notas.
+    Resumen: Crearemos un EditText personalizado, que tiene dibujadas líneas como si fuera papel de un cuaderno de notas.
 
     1. Crear una clase java que herede de AppCompatEditText
     2. Usar constructor que tenga el objeto AttributeSet como parámetro (importante)
@@ -215,12 +219,6 @@ Activities
     color, algunos desaparecen de la vista (View.changevisibility()) para dar paso a EditText etc. Lo importante es que el usuario
     puede modificar los datos y, al volver a pulsar el botón flotante, el objeto se actualiza.
 
-    Sin embargo aquí me estoy encontrando un problema y es que parece que cuando hacemos Intent.putExtra() no estamos pasando una
-    referencia al objeto sino sólo la información que tiene el objeto, así cuando intento actualizar los datos del objeto para que los cambios sean permanentes, esto no ocurre.
-
-    Así que de momento, los cambios que se hacen en el activity 1 no son permanentes. Veremos más adelante si lo puedo solucionar.
-  
-  ![demoCafesito1](https://media.giphy.com/media/eIXHsniyNp04pjPETN/giphy.gif)
   
   #### Implementación de ItemTouchHelper (para borrar ítem del recyclerview al desplazarlo a un lado)
 
@@ -243,16 +241,23 @@ Activities
       activando/desactivando el modo edición(mirar código)
       * Controlar si, al instanciarse CafeteroActivity estamos creando un nuevo Cafetero o estamos modificando uno existente. Esto lo hicimos discriminando el Intent, filtrando por el Extra (mirar código)
       * La primera columna es nº 0!: A diferencia de otras bases de datos como MySQL u Oracle, al usar cursores para obtener los registros de las tablas, la primera columna tiene un índice 0. Esto es muy importante.
+      * Muy importante, después de que se ejecute onCreate() de la clase SQLOpenHelper, se crearán tablas cuya estructura no puede cambiar. Dicha base
+      de datos se crea en la memoria del emulador del teléfono móvil en el que corre la aplicación. Si queremos cambiar la estructura de la base datos
+      modificando una tabla, tendremos que cambiar la versión en el constructor de la clase o dará errores.
+
     
     Implementación 
       1. Creamos una clase que herede de SQLiteOpenHelper
       2. Generamos un constructor que sólo recibirá Context como parámetro y al que le pasamos null como CursorFactory. 
-      3. 
+      3. Creamos los métodos para add, delete, update y select que necesita nuestra aplicación (mirar código comentado)
 
-  
-  
-  
 
+</details>
+
+<details>
+  <summary>Cafesito Demo</summary>
+  
+  ![Democafesito](https://media.giphy.com/media/Zx9ZcMmvuyMi4Zelk4/giphy.gif)
 </details>
 
 

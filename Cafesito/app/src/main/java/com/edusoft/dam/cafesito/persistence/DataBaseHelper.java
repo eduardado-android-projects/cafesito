@@ -90,12 +90,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
      */
     public Cursor getAllCafeteros(){
         SQLiteDatabase sqLiteDatabase;
-        Cursor cursor; // ojo estamos usando rawQuery() para el select
+        Cursor cursor;
 
-        sqLiteDatabase = getReadableDatabase();
+        sqLiteDatabase = getReadableDatabase(); //abrimos una instancia de la base de datos en modo lectura
         String query = "SELECT * FROM Cafetero";
 
-        cursor = sqLiteDatabase.rawQuery(query,null);
+        cursor = sqLiteDatabase.rawQuery(query,null); // ojo estamos usando rawQuery() para el select
 
         return cursor;
     }
