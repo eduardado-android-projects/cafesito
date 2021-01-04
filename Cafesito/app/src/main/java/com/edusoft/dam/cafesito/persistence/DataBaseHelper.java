@@ -33,23 +33,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private  static final String COL_4 = "NumCafe"; //OJO INTEGER
 
 
-    public DataBaseHelper(@Nullable Context context) {
-        super(context, NOMBRE_TABLA, null, VERSION_DB);
+    public DataBaseHelper(@Nullable Context context) { //recibirá el Activity
+        super(context, NOMBRE_TABLA, null, 2);
     }
-
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("drop TABLE Cafetero");
+        //db.execSQL("DROP TABLE IF EXISTS " + NOMBRE_TABLA);
 
-        /*
-            CREATE TABLE Cafetero (Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                   NombreCompleto TEXT,
-                                   Mv TEXT,
-                                   TipoCafe TEXT,
-                                   NumCafe INTEGER)
-
-         */
         String createTable = "CREATE TABLE " + NOMBRE_TABLA +
                 " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 " NombreCompleto TEXT, " +
@@ -60,7 +51,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Log.d(TAG, "onCreate: Creando tabla query:" + createTable);
 
         db.execSQL(createTable);
-
 
     }
 
@@ -99,8 +89,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public Cursor getAllCafeteros(){
         SQLiteDatabase sqLiteDatabase;
 
-        sqLiteDatabase = getWritableDatabase();
-        String query = "SELECT * FROM " + NOMBRE_TABLA;
+        sqLiteDatabase = getReadableDatabase();
+        String query = "SELECT * FROM Cafetero";
 
         Cursor cursor = sqLiteDatabase.rawQuery(query,null); // ojo estamos usando rawQuery() para el select
 
@@ -110,14 +100,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void deleteCafeteroFromDB(Cafetero cafetero){
         String id = cafetero.getId().toString();
 
-        SQLiteDatabase sqLiteDatabase = getWritableDatabase(); //TODO realmente hace falta instanciar esto cada vez que se hace una operación?
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         //DELETE FROM TABLE WHERE X = 'Y' AND Z ='W'
         String deleteQuery = "DELETE FROM " + NOMBRE_TABLA + " WHERE " +
                 COL_0 + " = '" + id + "'";
 
         Log.d(TAG, "deleteCafetero: deleteQuery : " + deleteQuery);
 
-        sqLiteDatabase.execSQL(deleteQuery); //TODO imagino que podremos usar el retorno de este método para confirmar que se han insertado datos en la base de dtos
+        sqLiteDatabase.execSQL(deleteQuery);
 
 
         //sqLiteDatabase.delete(NOMBRE_TABLA,"id = ?",new String[]{id}); //TODO probar este luego , que este si devuelve el nº de registros afectados por el delete

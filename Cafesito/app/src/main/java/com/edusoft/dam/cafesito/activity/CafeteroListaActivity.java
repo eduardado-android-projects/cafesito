@@ -28,6 +28,9 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
 
     private static final String TAG = "CafeteroListaActivity";
 
+    //base de datos
+    DataBaseHelper dataBaseHelper;
+
 
     //Estética
     private ItemTouchHelper.SimpleCallback simpleCallback;
@@ -79,7 +82,7 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
         mCafeteros = new ArrayList<>();
 
         //base de datos
-        //dataBaseHelper = new DataBaseHelper(this); // TODO el problema está aquí
+        dataBaseHelper = new DataBaseHelper(this); // TODO el problema está aquí
 
 
 
@@ -114,19 +117,6 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
         };
 
         new ItemTouchHelper(simpleCallback).attachToRecyclerView(mRecyclerView);
-    }
-
-    /** Borra un item de la lista de cafeteros
-     *
-     * @param cafetero
-     */
-    private void borrarCafetero(Cafetero cafetero) {
-        DataBaseHelper dataBaseHelper= new DataBaseHelper(this);
-        dataBaseHelper.deleteCafeteroFromDB(cafetero); //primero se borra de la base de datos
-
-        mCafeteros.remove(cafetero); //después se borra del array
-
-        mCafeteroRecyclerAdapter.notifyDataSetChanged(); //actualiza el adaptador con nuevos datos
     }
 
 
@@ -180,10 +170,9 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
         startActivity(intent);
     }
 
-    // BASE DE DATOS
 
+    // BASE DE DATOS
     private void addCafeteroToDataBase(Cafetero cafetero){
-        DataBaseHelper dataBaseHelper= new DataBaseHelper(this);
         Boolean insertResult;
 
         insertResult = dataBaseHelper.addCafetero(cafetero);
@@ -196,11 +185,23 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
 
     }
 
+    /** Borra un item de la lista de cafeteros
+     *
+     * @param cafetero
+     */
+    private void borrarCafetero(Cafetero cafetero) {
+
+        dataBaseHelper.deleteCafeteroFromDB(cafetero); //primero se borra de la base de datos
+
+        mCafeteros.remove(cafetero); //después se borra del array
+
+        mCafeteroRecyclerAdapter.notifyDataSetChanged(); //actualiza el adaptador con nuevos datos
+    }
+
     /** Carga la base de datos con 20 Cafeteros
      *  Ideal correr este método la primera vez que se instala la aplicación solamente
      */
     private void precargaDemoBaseDatos(){
-        DataBaseHelper dataBaseHelper= new DataBaseHelper(this);
 
         Log.d(TAG, "precargaDemoBaseDatos: PRECARGANDO UNOS CUANTOS DATOS FALSOS EN LA BASE DE DATOS");
         for(int i = 0; i < 5; i++){
@@ -220,7 +221,7 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
      *
      */
     private void cargaArrayConBaseDeDatos(){
-        DataBaseHelper dataBaseHelper= new DataBaseHelper(this);
+
         //todo NO ESTOY OBTENIENDO TODOS LOS REGISTROS EN EL CURSOR
         Cursor cursor = dataBaseHelper.getAllCafeteros(); //obtiene todos los registros de la base de datos
         Log.d(TAG, "cargaArrayConBaseDeDatos: QUE PASA AQUI");
