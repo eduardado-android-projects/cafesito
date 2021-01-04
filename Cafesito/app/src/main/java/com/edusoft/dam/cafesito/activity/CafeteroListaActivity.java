@@ -31,14 +31,9 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
     //base de datos
     DataBaseHelper dataBaseHelper;
 
-
-    //Estética
-    private ItemTouchHelper.SimpleCallback simpleCallback;
-
     //GUI
     private RecyclerView mRecyclerView;
     private Toolbar mListaCafeterosToolbar;
-    private FloatingActionButton floatingActionButton;
 
     //variables
     private ArrayList<Cafetero> mCafeteros;
@@ -50,7 +45,7 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
         Log.d(TAG, "onRestart: HE VUELTO A LA PANTALLA!");
         cargaArrayConBaseDeDatos();
 
-        
+
     }
 
     @Override
@@ -59,11 +54,10 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
         setContentView(R.layout.activity_cafetero_list);
 
 
-
         //GUI, referencia
         mRecyclerView = findViewById(R.id.recyclerView); //dentro de un Activity hay una referencia implícita a View. Puedo usar findViewById() directamente
         mListaCafeterosToolbar = findViewById(R.id.lista_cafeteros_toolbar);
-        floatingActionButton = findViewById(R.id.cafetero_list_fab);
+        FloatingActionButton floatingActionButton = findViewById(R.id.cafetero_list_fab);
         floatingActionButton.setOnClickListener(this);
 
         //variables, instanciación
@@ -73,26 +67,22 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
         dataBaseHelper = new DataBaseHelper(this); // TODO el problema está aquí
 
 
-
         //implementaciones ordenadas
         initRecyclerView(); //configura el recyclerivew con el adaptador personalizado
         separaItems(); //para separar los items
         initToolBar(); //para añadir un ToolBar personalizado
         initItemTouchHelper(); //para poder desplazar un ítem y borrarlo
 
-        //DATOS
+        //BASE DE DATOS
         cargaArrayConBaseDeDatos();
-        //insertaDemoCafeteros(); //para cargar datos falsos y probar la GUI, no inserta nada en la base de datos, sólo en el array del adapter
-        //precargaDemoBaseDatos(); // para cargar demo en la base de datos
 
 
     }
 
 
-
     private void initItemTouchHelper() {
         //instancia una clase abstracta y con ella hay que sobreescribir un par de métodos
-         ItemTouchHelper.SimpleCallback  simpleCallback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT) { //hay que pasarle 0 y la direccion que queremos implementar
+        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) { //hay que pasarle 0 y la direccion que queremos implementar
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 return false;
@@ -119,26 +109,13 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
     }
 
 
-
-    private void insertaDemoCafeteros(){
-        for(int i = 0; i < 20; i++){
-            Cafetero cafetero = new Cafetero();
-            cafetero.setNombreCompleto("nombre" + i);
-            cafetero.setMv("+34 " + i);
-            cafetero.setNumCafe(i);
-            cafetero.setTipoCafe("cafe con " + i);
-            mCafeteros.add(cafetero);
-        }
-        mCafeteroRecyclerAdapter.notifyDataSetChanged();
-    }
-
-    private void initRecyclerView(){
+    private void initRecyclerView() {
         LinearLayoutManager linearLayoutManager;
         linearLayoutManager = new LinearLayoutManager(this); //instanciamos un Layout Manager
         mRecyclerView.setLayoutManager(linearLayoutManager); //se lo pasamos al recyclerview
 
         mCafeteroRecyclerAdapter = new CafeteroRecyclerAdapter(mCafeteros //le pasamos el array
-                ,this); //ojo, recibe la interfaz que hace posible clickar en cada item
+                , this); //ojo, recibe la interfaz que hace posible clickar en cada item
 
         mRecyclerView.setAdapter(mCafeteroRecyclerAdapter); //le pasamos el adaptador al recyclerview
     }
@@ -147,7 +124,7 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
     public void onCafeteroClick(Integer position) { //Manda Cafeteros de la lista al pulsar algún item del RecyclerView
         Log.d(TAG, "onCafeteroClick: Hicisteclick en el cafetero de la POSICION: " + position);
         Log.d(TAG, "onCafeteroClick: clicaste en el cafetero: " + mCafeteros.get(position).toString());
-        Intent intent = new Intent(this,CafeteroActivity.class);
+        Intent intent = new Intent(this, CafeteroActivity.class);
         //Los objetos tienen que implementar la interfaz Parcelable para poder mandarse entre Activities
         intent.putExtra("com.edusoft.dam.cafesito.cafetero_old", mCafeteros.get(position)); //usamos el paquete único de la app + nombre del objeto (buenas prácticas por si recibimos mismo objeto de otra app)
         startActivity(intent);
@@ -162,32 +139,22 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
 
 
     // BASE DE DATOS
-    private void addCafeteroToDataBase(Cafetero cafetero){
-        Boolean insertResult;
 
-        insertResult = dataBaseHelper.addCafetero(cafetero);
 
-        if(insertResult){
-            Toast.makeText(this, "Cafetero Guardado con éxito", Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(this, "Hubo un problema al guardar el cafetero", Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
-    /** Borra un item de la lista de cafeteros
+    /**
+     * Borra un item de la lista de cafeteros
      *
-     * @param cafetero
+     * @param cafetero Objeto cafetero con los datos del registro que se quieren borrar
      */
     private void borrarCafetero(Cafetero cafetero) {
 
         Boolean resultadoDelete = dataBaseHelper.deleteCafeteroFromDB(cafetero); //primero se borra de la base de datos
-            if(resultadoDelete){
-                String infoUser = (cafetero.getNombreCompleto() != null) ?cafetero.getNombreCompleto(): "";
-                Toast.makeText(this, "Se borró permanentemente a " + infoUser, Toast.LENGTH_SHORT).show();
-            }else{
-                Toast.makeText(this, "Algo raro sucedió borrando al cafetero.. :(", Toast.LENGTH_SHORT).show();
-            }
+        if (resultadoDelete) {
+            String infoUser = (cafetero.getNombreCompleto() != null) ? cafetero.getNombreCompleto() : "";
+            Toast.makeText(this, "Se borró permanentemente a " + infoUser, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Algo raro sucedió borrando al cafetero.. :(", Toast.LENGTH_SHORT).show();
+        }
 
         mCafeteros.remove(cafetero); //después se borra del array
 
@@ -195,47 +162,25 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
     }
 
 
-    /** Carga la base de datos con 5 Cafeteros
-     *  Ideal correr este método la primera vez que se instala la aplicación solamente
-     */
-    private void precargaDemoBaseDatos(){
-
-        Log.d(TAG, "precargaDemoBaseDatos: PRECARGANDO UNOS CUANTOS DATOS FALSOS EN LA BASE DE DATOS");
-        for(int i = 0; i < 5; i++){
-            Cafetero cafetero = new Cafetero();
-            cafetero.setNombreCompleto("nombre" + i);
-            cafetero.setMv("+34 " + i);
-            cafetero.setNumCafe(i);
-            cafetero.setTipoCafe("cafe con " + i);
-
-            dataBaseHelper.addCafetero(cafetero);
-        }
-
-        mCafeteroRecyclerAdapter.notifyDataSetChanged();
-    }
-
     /** Carga el array con objetos Cafetero que se encuentran en la base de datos y refresca el adaptador del recyclerview
      *
      */
-    private void cargaArrayConBaseDeDatos(){
+    private void cargaArrayConBaseDeDatos() {
 
         Cursor cursor = dataBaseHelper.getAllCafeteros(); //obtiene todos los registros de la base de datos
 
-        Integer eltosBD = cursor.getCount();
-
 
         mCafeteros.clear();
-        while(cursor.moveToNext()){ //extrae, de todos los registros, los campos que nos interesan
+        while (cursor.moveToNext()) { //extrae, de todos los registros, los campos que nos interesan
 
             Cafetero cafeteroDB = new Cafetero(); //creo un cafetero
 
-            cafeteroDB.setId(cursor.getInt(0)); //importante en SQLite sí hay columna 0 a dif
+            cafeteroDB.setId(cursor.getInt(0)); // importante en SQLite sí hay columna 0 a dif
             cafeteroDB.setNombreCompleto(cursor.getString(1)); //meto en el todos los datos del primer registro (el id no lo guardo)
             cafeteroDB.setMv(cursor.getString(2));
             cafeteroDB.setTipoCafe(cursor.getString(3));
             cafeteroDB.setNumCafe(cursor.getInt(4));
 
-            //Log.d(TAG, "cargaArrayConBaseDeDatos: CAFETERO ANTES DE AÑADIR AL ARRAY" + cafeteroDB);
 
             mCafeteros.add(cafeteroDB); //los va añadiendo al array global de cafeteros (que luego se cargará en el adapter
         }
@@ -243,10 +188,6 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
         mCafeteroRecyclerAdapter.notifyDataSetChanged();// avisa al adapter que los datos han cambiado para que refresque la lista
 
     }
-
-
-
-
 
 
 }

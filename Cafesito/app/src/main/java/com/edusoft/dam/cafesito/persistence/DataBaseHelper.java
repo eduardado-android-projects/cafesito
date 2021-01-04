@@ -13,33 +13,32 @@ import com.edusoft.dam.cafesito.model.Cafetero;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
 
-    /*
-    private String nombreCompleto;
-    private String mv;
-    private String tipoCafe;
-    private Integer numCafe;
-     */
-
+    //debuggins
     private static final String TAG = "DataBaseHelper";
 
+
     private static final String NOMBRE_TABLA = "Cafetero";
-    private static final Integer VERSION_DB = 1;
+    private static final Integer VERSION_DB = 2; //Es 2 porque cambiamos la tabla en una ocasión
 
+    //Campos en PascalCase
     private  static final String COL_0 = "Id";
-
     private  static final String COL_1 = "NombreCompleto";
     private  static final String COL_2 = "Mv";
     private  static final String COL_3 = "TipoCafe";
     private  static final String COL_4 = "NumCafe"; //OJO INTEGER
 
-
-    public DataBaseHelper(@Nullable Context context) { //recibirá el Activity
-        super(context, NOMBRE_TABLA, null, 2);
+    //El constructor sólo necesita recibir como parámetro el Activity
+    public DataBaseHelper(@Nullable Context context) {
+        super(context, NOMBRE_TABLA, null, VERSION_DB);
     }
 
+    /** La primera vez que se instancia la clase, se creará la tabla
+     *  Precaución: si se cambia la sentencia de creación de tabla hay que modificar la versión de la base de datos
+     *  en el constructor
+     * @param db
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        //db.execSQL("DROP TABLE IF EXISTS " + NOMBRE_TABLA);
 
         String createTable = "CREATE TABLE " + NOMBRE_TABLA +
                 " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -58,7 +57,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) { //este método se ejecuta cuando se cambia la versión de la base de datos
         db.execSQL("DROP TABLE IF EXISTS " + NOMBRE_TABLA);
         onCreate(db);
-
     }
 
     /** Añade un Cafetero a la base de datos
@@ -86,73 +84,77 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return resultado.equals(-1) ? false: true;
     }
 
+    /** Consulta la tabla y devuelve todos los registros
+     *
+     * @return cursor con todos los registros
+     */
     public Cursor getAllCafeteros(){
         SQLiteDatabase sqLiteDatabase;
+        Cursor cursor; // ojo estamos usando rawQuery() para el select
 
         sqLiteDatabase = getReadableDatabase();
         String query = "SELECT * FROM Cafetero";
 
-        Cursor cursor = sqLiteDatabase.rawQuery(query,null); // ojo estamos usando rawQuery() para el select
+        cursor = sqLiteDatabase.rawQuery(query,null);
 
         return cursor;
     }
 
+    /** Borra un registro de la tabla
+     *
+     * @param cafetero
+     * @return true si se elimina un registro, false en caso contrario
+     */
     public Boolean deleteCafeteroFromDB(Cafetero cafetero){
-        Boolean borrarOno;
 
-        String id = cafetero.getId().toString();
+        SQLiteDatabase sqLiteDatabase;
+        String[] argumento;
+        String whereClause;
+        Integer resultadoDelete;
 
-        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-        //DELETE FROM TABLE WHERE X = 'Y' AND Z ='W'
-        String deleteQuery = "DELETE FROM " + NOMBRE_TABLA + " WHERE " +
-                COL_0 + " = '" + id + "'";
+        sqLiteDatabase = getWritableDatabase();
+        argumento = new String[]{cafetero.getId().toString()};
+        whereClause = COL_0 + " = ?";
 
-        Log.d(TAG, "deleteCafetero: deleteQuery : " + deleteQuery);
-
-        //sqLiteDatabase.execSQL(deleteQuery);
-
-        //Este método evuelve el nº de registros afectados por el delete, lo cual es útil para informar al usuario
-        Integer resultadoDelete = sqLiteDatabase.delete(NOMBRE_TABLA,"id = ?",new String[]{id});
+        resultadoDelete = sqLiteDatabase.delete(NOMBRE_TABLA,whereClause, argumento);
 
         return (resultadoDelete > -1) ?true:false;
-
 
     }
 
 
-    public void updateCafetero(Cafetero oldCafetero, Cafetero newCafetero){
-         /*
-        private  static final String COL_1 = "NombreCompleto";
-    private  static final String COL_2 = "Mv";
-    private  static final String COL_3 = "TipoCafe";
-    private  static final String COL_4 = "NumCafe"; //OJO INTEGER
-         */
+    /** Actualiza un registro de la tabla
+     *
+     * @param oldCafetero Objeto Cafetero con los datos anteriores
+     * @param newCafetero Objeto Cafetero con los datos deseados
+     * @return true si se actualiza un registro, false en caso contrario
+     */
+    public Boolean updateCafetero(Cafetero oldCafetero, Cafetero newCafetero){
+        SQLiteDatabase sqLiteDatabase; //se obtiene una instancia de la base de datos en modo escritura
 
-        /*
-            UPDATE Cafetero
-            SET COL_1 = 'Chayan',
-                 COL_2 = '667622551',
-                 COL_3 = 'Café con aceitunas',
-                 COL_4 = '5'
-            WHERE
-                COL_0 = ID
-         */
-        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-
-        String updateQuery = "UPDATE " + NOMBRE_TABLA + " SET "         +
-                COL_1 + "='" + newCafetero.getNombreCompleto() + "',"   +
-                COL_2 + "='" + newCafetero.getMv()             + "',"   +
-                COL_3 + "='" + newCafetero.getTipoCafe() +       "',"   +
-                COL_4 + "='" + newCafetero.getNumCafe() +        "'" +
-                " WHERE "    +
-                COL_0 + "='"+ oldCafetero.getId().toString() + "'";
-
-        Log.d(TAG, "updateCafetero: update query" + updateQuery);
-
-        sqLiteDatabase.execSQL(updateQuery);
+        ContentValues contentValues;
+        String whereClause;
+        String[] argumento;
+        Integer updateResult;
 
 
+        sqLiteDatabase = getWritableDatabase();
+        contentValues = new ContentValues();
+        whereClause = COL_0 + " = ?";
 
+        //cargamos el objeto ContentValues con los datos que queremos actualizar, que provienen de newCafetero
+        contentValues.put(COL_1, newCafetero.getNombreCompleto());
+        contentValues.put(COL_2, newCafetero.getMv());
+        contentValues.put(COL_3, newCafetero.getTipoCafe());
+        contentValues.put(COL_4, newCafetero.getNumCafe());
 
+        //el id del registro a modificar
+        argumento = new String[]{oldCafetero.getId().toString()};
+
+        //ejecución
+        updateResult = sqLiteDatabase.update(NOMBRE_TABLA, contentValues, whereClause, argumento);
+
+        //si ha ido bien devolverá true
+        return (updateResult > 0 ) ? true : false;
     }
 }

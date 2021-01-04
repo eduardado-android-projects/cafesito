@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.edusoft.dam.cafesito.R;
 import com.edusoft.dam.cafesito.component.LinedEditText;
+import com.edusoft.dam.cafesito.exception.IntentNoReconocidoException;
 import com.edusoft.dam.cafesito.model.Cafetero;
 import com.edusoft.dam.cafesito.persistence.DataBaseHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -28,9 +29,9 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
     private Integer modo;
 
     // Funcionamento memoria
-    private Boolean isNewCafetero; //si el usuario está creando un nuevo Cafetero
+    private Boolean isNewCafetero; //recuerda si el usuario está creando un nuevo Cafetero
 
-    //debug
+    //debugging
     private static final String TAG = "CafeteroActivity";
 
     //VIEW MODE
@@ -38,7 +39,6 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
         TextView textViewNombreToolBar;
         TextView textViewMv;
         LinedEditText tipoCafeNonEditableLinedEditText;
-        //variables
 
     //EDIT MODE
         //GUI
@@ -56,7 +56,7 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
         ImageButton buttonBackArrow;
 
     //Variables Globales
-    private Cafetero mCafetero;
+    private Cafetero mCafeteroEditado;
     private Cafetero mCafeteroViejo;
 
     @Override
@@ -96,12 +96,15 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
         buttonBackArrow.setOnClickListener(this);
 
 
-        isNewCafetero = recogerIntent(); //recoge intent y alamcena, en un atributo de la clase, si estamos ante la creación de un nuevo cafetero o no
+        try {
+            isNewCafetero = recogerIntent(); //recoge intent y alamcena, en un atributo de la clase, si estamos ante la creación de un nuevo cafetero o no
+        } catch (IntentNoReconocidoException e) {
+            e.printStackTrace();
+        }
 
         if(isNewCafetero){
             enableEditMode();
-
-        }else{
+        }else {
             mCafeteroViejo = getIntent().getParcelableExtra("com.edusoft.dam.cafesito.cafetero_old");
             populateGUI(mCafeteroViejo);
         }
@@ -114,7 +117,7 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
      *  Si recibe un objeto de CafeteroListaActivity lo asigna a la variable global mCafetero.
      * @return si viene de la lista de cafeteros, devuelve true de lo contrario devuelve false
      */
-    private Boolean recogerIntent() {
+    private Boolean recogerIntent() throws IntentNoReconocidoException {
         Log.d(TAG, "recogerIntent: Intent Recogido");
 
         if(getIntent().hasExtra("com.edusoft.dam.cafesito.cafetero_old")){
@@ -122,8 +125,11 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
         }else if (getIntent().hasExtra("com.edusoft.dam.cafesito.cafetero_new")){
             return true;
         }else{
-            return null;
+            Log.d(TAG, "recogerIntent: " + "INTENT NO RECONOCIDO");
+            throw new IntentNoReconocidoException("INTENT NO RECONOCIDO");
+
         }
+
 
     }
 
@@ -153,11 +159,15 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
         editTextNumCafe.setText(numCafe);
     }
 
+    /** Activa el modo edición del Activity
+     *
+     */
     private void enableEditMode(){
         modo = MODO_EDICION_ACTIVADO;
 
-        floatingActionButtonEdit.setImageResource(R.drawable.ic_baseline_check_circle_24);
+        floatingActionButtonEdit.setImageResource(R.drawable.ic_baseline_check_circle_24); //cambia el aspecto del botón
 
+        //MODIFICA APARIENCIA Y APARICIÓN/DESPARICIÓN DE LOS WIDGETS PERTINENTES
         editTextNumCafe.setBackgroundColor(getResources().getColor(R.color.terciario));
 
         textViewNombreToolBar.setVisibility(View.GONE);
@@ -178,24 +188,21 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
     }
 
     /** Desactiva el modo edición
-     *
-     *
-     * @return El objeto cafetero que queda después de que el usuario vuelva a pulsar el botón de "terminar edición"
      */
     private void disableEditMode(){
 
         //cada vez que de desactiva el modo edición
         updateView(); //se actualiza el VIEW con los datos que hubiese en el modo EDIT
-        mCafetero = extractCafeteroFromScreen(); //se extraen los datos de la pantalla y se guardan en un objeto Cafetero Global
-        Log.d(TAG, "disableEditMode: CAFETERO EXTRAÍDO de la pantalla : " + mCafetero);
+        mCafeteroEditado = extractCafeteroFromScreen(); //se extraen los datos de la pantalla y se guardan en un objeto Cafetero Global
+        Log.d(TAG, "disableEditMode: CAFETERO EXTRAÍDO de la pantalla : " + mCafeteroEditado);
         floatingActionButtonSave.setVisibility(View.VISIBLE); //aparece el boton guardar
 
+        modo = MODO_EDICION_DESACTIVADO; //se guarda el estado de la clase
+
+        floatingActionButtonEdit.setImageResource(R.drawable.ic_baseline_edit_24); //se cambia la apariencia del botón CHECK por el botón EDIT
 
 
-        modo = MODO_EDICION_DESACTIVADO;
-
-        floatingActionButtonEdit.setImageResource(R.drawable.ic_baseline_edit_24);
-
+        //CAMBIO DE ASPECTO Y APARICIÓN/DESPARICIÓN DE LOS WIDGETS PERTINENTES PARA ENTRAR EN MODO VIEW
         editTextNumCafe.setBackgroundColor(getResources().getColor(R.color.primario));
 
         textViewNombreToolBar.setVisibility(View.VISIBLE);
@@ -216,61 +223,46 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-
-    @SuppressLint("NonConstantResourceId")
-    @Override
-    public void onClick(View v) {
-        switch(v.getId()){
-            case R.id.cafetero_fab:{
-                cambiaModo();
-                break;
-            }
-            case R.id.save_in_database_fab:{
-                guardaPermanente();
-                break;
-            }
-            case R.id.numCafe_imageButtonUp:{
-                cambiaNumCafe(1);
-                break;
-            }
-            case R.id.numCafe_imageButtonDown:{
-                cambiaNumCafe(-1);
-                break;
-            }
-            case R.id.toolbar_back_arrow:{
-                finish();
-                break;
-            }
-
-
-        }
-
-    }
-
+    /** Guardará los cambios provocados en el modo edición de manera permanente
+     *
+     * Si el usuario está editando un Cafetero ya existente, se hará un update
+     * Si el usuario está creando un nuevo Cafetero se hará un insert
+     *
+     */
     private void guardaPermanente() {
         //cada vez que se pulsa el botón guardar
         if(isNewCafetero){
             Log.d(TAG, "guardaPermanente: NUEVO CAFETERO");
-            Log.d(TAG, "guardaPermanente: VAMOS A GUARDAR EN LA BASE DE DATOS A" + mCafetero.toString());
+            Log.d(TAG, "guardaPermanente: VAMOS A GUARDAR EN LA BASE DE DATOS A" + mCafeteroEditado.toString());
 
-            Boolean resultadoInsercion = dataBaseHelper.addCafetero(mCafetero);
+            Boolean resultadoInsercion = dataBaseHelper.addCafetero(mCafeteroEditado);
             if(resultadoInsercion){
                 String infoUsuario = "";
-                if(mCafetero.getNombreCompleto() != null){
-                    infoUsuario = mCafetero.getNombreCompleto();
+                if(mCafeteroEditado.getNombreCompleto() != null){
+                    infoUsuario = mCafeteroEditado.getNombreCompleto();
                 }
                 Toast.makeText(this, "Cafetero guardado" + infoUsuario , Toast.LENGTH_SHORT).show();
             }
             finish();
         }else{ //si hemos llegado aquí pulsando un cafetero que ya existía, cuando pulsamos el botón de guardado queremos que se modifique el registro de la base de datos
             Log.d(TAG, "guardaPermanente: VIEJO CAFETERO");
-            dataBaseHelper.updateCafetero( mCafeteroViejo, mCafetero);
+            Boolean updateResult = dataBaseHelper.updateCafetero(mCafeteroViejo, mCafeteroEditado);
+            if(updateResult){
+                Toast.makeText(this, "Cafetero actualizado! " , Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(this, "No se ha podido actualizar al cafetero", Toast.LENGTH_SHORT).show();
+            }
+
             finish();//cuando termine se vuelve a la actividad inicial de lista
         }
 
         floatingActionButtonSave.setVisibility(View.GONE);//desaparece el botón
     }
 
+    /** Cambia en una unidad el nº de cafés de cada Cafetero, en nigún caso bajará de cero.
+     *
+     * @param i (unidades positivas o negativas )
+     */
     private void cambiaNumCafe(Integer i) {
         Integer numCafe = Integer.parseInt(editTextNumCafe.getText().toString());
         String numCafeString;
@@ -287,7 +279,6 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
     }
 
     /** Cambia el Activity de modo VIEW a mode EDIT y viceversa
-     *  @return devuelve objeto cafetero si estaba en modo edicion y sale de él, devuelve null si no estaba en modo edición
      */
     private void cambiaModo() {
 
@@ -338,6 +329,36 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
 
 
         return new Cafetero(null,cafeteroName,mv,tipoCafe,numCafe);
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+            case R.id.cafetero_fab:{
+                cambiaModo();
+                break;
+            }
+            case R.id.save_in_database_fab:{
+                guardaPermanente();
+                break;
+            }
+            case R.id.numCafe_imageButtonUp:{
+                cambiaNumCafe(1);
+                break;
+            }
+            case R.id.numCafe_imageButtonDown:{
+                cambiaNumCafe(-1);
+                break;
+            }
+            case R.id.toolbar_back_arrow:{
+                finish();
+                break;
+            }
+
+
+        }
+
     }
 
 
