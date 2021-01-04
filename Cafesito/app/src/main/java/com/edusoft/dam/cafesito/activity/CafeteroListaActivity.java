@@ -48,19 +48,6 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
     protected void onRestart() {
         super.onRestart();
         Log.d(TAG, "onRestart: HE VUELTO A LA PANTALLA!");
-        //cada vez que el usuario vuelve al activity principal desde otra activity, se actualiza el adapter con los datos de la base de datos
-
-        mCafeteros.clear(); //se limpia el array
-        cargaArrayConBaseDeDatos(); //TODO cargo el array AQUI ESTÁ EL FALLO
-        for (Cafetero caf: mCafeteros){
-            Log.d(TAG, "onRestart: CAFETERO EN BD" + caf.toString());
-        }
-        /*
-        mCafeteroRecyclerAdapter.setmCafeteros(mCafeteros); //se lo paso al adapter
-        mCafeteroRecyclerAdapter.notifyDataSetChanged(); //se notifica al adaptador que que tiene nuevos datos que adaptar, que se actualice.*/
-
-        //recreate();
-
 
         
     }
@@ -196,6 +183,17 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
         mCafeteros.remove(cafetero); //después se borra del array
 
         mCafeteroRecyclerAdapter.notifyDataSetChanged(); //actualiza el adaptador con nuevos datos
+    }
+
+    private void addCafetero(Cafetero cafetero){
+
+        dataBaseHelper.addCafetero(cafetero); //añadimos el cafetero a la base de datos
+
+        mCafeteros.add(cafetero);//lo añadimos al array
+
+        mCafeteroRecyclerAdapter.notifyDataSetChanged();
+
+        //mCafeteroRecyclerAdapter.notifyItemInserted(); //TODO probar también
     }
 
     /** Carga la base de datos con 20 Cafeteros

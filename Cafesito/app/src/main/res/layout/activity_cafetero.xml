@@ -71,6 +71,16 @@
             android:src="@drawable/ic_baseline_edit_24"
             android:layout_margin="8dp"/>
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/save_in_database_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="183dp"
+            android:layout_gravity="bottom|end"
+            android:src="@drawable/ic_baseline_save_24"
+            android:layout_margin="8dp"
+            android:visibility="gone"
+            android:backgroundTint="@color/rojo"/>
+
     </FrameLayout>
 
 

@@ -83,7 +83,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         resultado = sqLiteDatabase.insert(NOMBRE_TABLA,null,contentValues);
 
-        return resultado.equals(-1) ? true: false;
+        return resultado.equals(-1) ? false: true;
     }
 
     public Cursor getAllCafeteros(){
