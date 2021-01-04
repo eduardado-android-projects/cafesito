@@ -28,6 +28,10 @@ public class CafeteroRecyclerAdapter extends RecyclerView.Adapter<CafeteroRecycl
         mOnCafeteroListener = onCafeteroListener;
     }
 
+    public void setmCafeteros(ArrayList<Cafetero> mCafeteros) { //TODO experimental
+        this.mCafeteros = mCafeteros;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) { //genera un ViewHolder por cada item

@@ -90,18 +90,20 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
 
 
 
-        isNewCafetero = recogerIntent(); //recoge intent y alamacena en un atributo de la clase si estamos ante la creación de un nuevo cafetero
+        isNewCafetero = recogerIntent(); //recoge intent y alamcena, en un atributo de la clase, si estamos ante la creación de un nuevo cafetero o no
 
         if(isNewCafetero){
-            crearNuevoCafetero();
+            createCafetero();
         }else{
-            updateCafeteroWithGlobalCafetero();
+            updateCafetero();
         }
+
+
 
 
     }
 
-    private void crearNuevoCafetero() {
+    private void createCafetero() {
         //dataBaseHelper.addCafetero(cafeteroNuevo);
         //ahora quiero guardarlo en el array y luego actualizar el adaptador, cómo lo hago?
 
@@ -109,7 +111,7 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-    private void updateCafeteroWithGlobalCafetero() {
+    private void updateCafetero() {
     }
 
 
@@ -303,20 +305,32 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
 
         //Si estamos creando un nuevo Cafetero, al finalizar, se creará un objeto y se asignará a un atributo de la clase especial para nuevosCafeteros
         if(isNewCafetero){
-            Log.d(TAG, "updateView: SE TRATA DE UN NUEVO CAFETERO");
+            Log.d(TAG, "updateView: ENTRANDO EN MODO EDICIÓN CON NUEVO CAFETERO");
 
             //se modifica el objeto Cafetero global //todo el null pointer está aquí no hace falta este paso
             cafeteroNuevo = new Cafetero(null,cafeteroName,mv,tipoCafe, Integer.parseInt(numCafe));
 
-            Log.d(TAG, "updateView: SE HA CREADO UN CAFETERO: " + cafeteroNuevo);
-
+            Log.d(TAG, "updateView: SE HA PRODUCIDO UN CAFETERO: " + cafeteroNuevo + "LO GUARDAMOS EN LA BASE DE DATOS?");
 
         }
 
+    }
 
+    @Override
+    protected void onDestroy() {
+        Boolean insercionCorrecta;
 
+        if(cafeteroNuevo != null){ //ojo, no siempre que se destruye la Activity tenemos un nuevo cafetero que guardar en la base de datos
 
+            insercionCorrecta = dataBaseHelper.addCafetero(cafeteroNuevo);
+            if(insercionCorrecta){
+                Log.d(TAG, "onDestroy: SE HA GUARDAD CORRECTAMENTE EN LA BASE DE DATOS AL CAFETERO " + cafeteroNuevo);
+            }else{
+                Log.d(TAG, "onDestroy: HUBO UN PROBLEMA AL GUARDAR AL CAFETERO " + cafeteroNuevo + "EN LA BASE DE DATOS" );
+            }
 
+        }
+        super.onDestroy();
     }
 
 

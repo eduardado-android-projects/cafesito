@@ -40,6 +40,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL("drop TABLE Cafetero");
 
         /*
             CREATE TABLE Cafetero (Id INTEGER PRIMARY KEY AUTOINCREMENT,
