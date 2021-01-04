@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.edusoft.dam.cafesito.R;
 import com.edusoft.dam.cafesito.component.LinedEditText;
@@ -98,7 +99,6 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
 
         if(isNewCafetero){
             enableEditMode();
-
 
         }else{
             Cafetero cafeteroViejo = getIntent().getParcelableExtra("com.edusoft.dam.cafesito.cafetero_old");
@@ -250,6 +250,17 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
         //cada vez que se pulsa el botón guardar
         if(isNewCafetero){
             Log.d(TAG, "guardaPermanente: NUEVO CAFETERO");
+            Log.d(TAG, "guardaPermanente: VAMOS A GUARDAR EN LA BASE DE DATOS A" + mCafetero.toString());
+
+            Boolean resultadoInsercion = dataBaseHelper.addCafetero(mCafetero);
+            if(resultadoInsercion){
+                String infoUsuario = "";
+                if(mCafetero.getNombreCompleto() != null){
+                    infoUsuario = mCafetero.getNombreCompleto();
+                }
+                Toast.makeText(this, "Cafetero guardado" + infoUsuario , Toast.LENGTH_SHORT).show();
+            }
+            finish();
         }else{
             Log.d(TAG, "guardaPermanente: VIEJO CAFETERO");
         }
@@ -325,29 +336,6 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
 
         return new Cafetero(null,cafeteroName,mv,tipoCafe,numCafe);
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        /*Boolean insercionCorrecta;
-
-        if(cafeteroNuevo != null){ //ojo, no siempre que se destruye la Activity tenemos un nuevo cafetero que guardar en la base de datos
-
-            insercionCorrecta = dataBaseHelper.addCafetero(cafeteroNuevo);
-
-            if(insercionCorrecta){
-                Log.d(TAG, "onDestroy: SE HA GUARDAD CORRECTAMENTE EN LA BASE DE DATOS AL CAFETERO " + cafeteroNuevo);
-            }else{
-                Log.d(TAG, "onDestroy: HUBO UN PROBLEMA AL GUARDAR AL CAFETERO " + cafeteroNuevo + "EN LA BASE DE DATOS" );
-            }
-
-
-
-        }*/
-    }
-
-
-
 
 
 }
