@@ -48,6 +48,7 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
     protected void onRestart() {
         super.onRestart();
         Log.d(TAG, "onRestart: HE VUELTO A LA PANTALLA!");
+        cargaArrayConBaseDeDatos();
 
         
     }
@@ -134,9 +135,11 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
     private void initRecyclerView(){
         LinearLayoutManager linearLayoutManager;
         linearLayoutManager = new LinearLayoutManager(this); //instanciamos un Layout Manager
-
-        mCafeteroRecyclerAdapter = new CafeteroRecyclerAdapter(mCafeteros,this); //ojo, recibe la interfaz que hace posible clickar en cada item
         mRecyclerView.setLayoutManager(linearLayoutManager); //se lo pasamos al recyclerview
+
+        mCafeteroRecyclerAdapter = new CafeteroRecyclerAdapter(mCafeteros //le pasamos el array
+                ,this); //ojo, recibe la interfaz que hace posible clickar en cada item
+
         mRecyclerView.setAdapter(mCafeteroRecyclerAdapter); //le pasamos el adaptador al recyclerview
     }
 
@@ -185,16 +188,6 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
         mCafeteroRecyclerAdapter.notifyDataSetChanged(); //actualiza el adaptador con nuevos datos
     }
 
-    private void addCafetero(Cafetero cafetero){
-
-        dataBaseHelper.addCafetero(cafetero); //añadimos el cafetero a la base de datos
-
-        mCafeteros.add(cafetero);//lo añadimos al array
-
-        mCafeteroRecyclerAdapter.notifyDataSetChanged();
-
-        //mCafeteroRecyclerAdapter.notifyItemInserted(); //TODO probar también
-    }
 
     /** Carga la base de datos con 20 Cafeteros
      *  Ideal correr este método la primera vez que se instala la aplicación solamente
@@ -222,14 +215,12 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
 
         //todo NO ESTOY OBTENIENDO TODOS LOS REGISTROS EN EL CURSOR
         Cursor cursor = dataBaseHelper.getAllCafeteros(); //obtiene todos los registros de la base de datos
-        Log.d(TAG, "cargaArrayConBaseDeDatos: QUE PASA AQUI");
-
-        //O NO ESTÁ FUNCIONANDO getAllCafeteros o el cursor no se actualiza
 
         Integer eltosBD = cursor.getCount();
 
         Log.d(TAG, "cargaArrayConBaseDeDatos: El cursor dice que hay " + eltosBD);
 
+        mCafeteros.clear();
         while(cursor.moveToNext()){ //extrae, de todos los registros, los campos que nos interesan
 
             Cafetero cafeteroDB = new Cafetero(); //creo un cafetero
