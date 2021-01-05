@@ -28,7 +28,7 @@ public class CafeteroRecyclerAdapter extends RecyclerView.Adapter<CafeteroRecycl
         mOnCafeteroListener = onCafeteroListener;
     }
 
-    public void setmCafeteros(ArrayList<Cafetero> mCafeteros) { //TODO experimental
+    public void setmCafeteros(ArrayList<Cafetero> mCafeteros) {
         this.mCafeteros = mCafeteros;
     }
 

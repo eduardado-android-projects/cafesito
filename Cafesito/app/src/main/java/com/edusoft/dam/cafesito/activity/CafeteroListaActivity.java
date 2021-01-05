@@ -1,17 +1,23 @@
 package com.edusoft.dam.cafesito.activity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 
@@ -21,8 +27,11 @@ import com.edusoft.dam.cafesito.model.Cafetero;
 import com.edusoft.dam.cafesito.persistence.DataBaseHelper;
 import com.edusoft.dam.cafesito.util.SeparaVerticalItemDecorator;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class CafeteroListaActivity extends AppCompatActivity implements CafeteroRecyclerAdapter.OnCafeteroListener, View.OnClickListener {
 
@@ -34,10 +43,14 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
     //GUI
     private RecyclerView mRecyclerView;
     private Toolbar mListaCafeterosToolbar;
-
+    FloatingActionButton floatingActionButton;
+    private ImageButton imageButtonInfo;
+    
     //variables
     private ArrayList<Cafetero> mCafeteros;
     private CafeteroRecyclerAdapter mCafeteroRecyclerAdapter;
+
+
 
     @Override
     protected void onRestart() {
@@ -47,6 +60,7 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
 
 
     }
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +71,12 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
         //GUI, referencias
         mRecyclerView = findViewById(R.id.recyclerView); //dentro de un Activity hay una referencia implícita a View. Puedo usar findViewById() directamente
         mListaCafeterosToolbar = findViewById(R.id.lista_cafeteros_toolbar);
-        FloatingActionButton floatingActionButton = findViewById(R.id.cafetero_list_fab);
+
+        //botones
+        floatingActionButton = findViewById(R.id.cafetero_list_fab);
         floatingActionButton.setOnClickListener(this);
+        imageButtonInfo = findViewById(R.id.info_fab);
+        imageButtonInfo.setOnClickListener(this);
 
         //variables, instanciación
         mCafeteros = new ArrayList<>();
@@ -76,8 +94,47 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
         //BASE DE DATOS
         cargaArrayConBaseDeDatos();
 
+    }
+
+    //PREFERENCIAS
+
+    /** Guarda en el archivo de preferencias la fecha en la que se ejecuta este método
+     *
+     */
+    private void saveDateInPreferences(){
+        Date fechaActual = Calendar.getInstance().getTime();
+        String fechaString = fechaActual.toString();
+        String fechaKey = "fechaUltimoBorrado";
+        String fechaValue = fechaString;
+
+        //AHORA CON PREFERENCIAS DEL USUARIO DE LA APLICACIÓN
+        //Al usar getSharedPreferences(), se genera un archivo (lo tenemos referenciado en el recurso strings.xml), se llama CafesitoLogFile
+        SharedPreferences sharedPreferencesGlobal = getSharedPreferences(getString(R.string.com_edusoft_dam_cafesito_CAFESITO_LOG), MODE_PRIVATE); //El objeto sharedPreferencesGlobal apunta al fichero CafesitoLogFile.xml
+        SharedPreferences.Editor globalEditor = sharedPreferencesGlobal.edit(); //cargamos el editor del las preferencias globales
+        globalEditor.putString(fechaKey,fechaValue); //guardamos pares clave:valor en el editor
+        globalEditor.apply(); //el editor aplica los cambios
+        Log.d(TAG, "saveDateInPreferences: Fecha guardada en preferencias" + fechaString);
+    }
+
+    /** Lee el archivo de preferencias y muestra por pantalla la fecha del último inicio de sesión
+     *
+     */
+    private void informaUltimoBorrado() {
+
+        String fechaKey = "fechaUltimoBorrado";
+        Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+        //PARA LEER DEL ARCHIVO DE PREFERENCIAS GLOBAL
+        SharedPreferences sharedPreferencesLectura = getSharedPreferences(getString(R.string.com_edusoft_dam_cafesito_CAFESITO_LOG),MODE_PRIVATE);
+        String lecturaFecha = sharedPreferencesLectura.getString(fechaKey,"error"); //obtiene el valor del elto con key "fechaInicioSesion", devuelve "error" si no encuetra el key
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Ultimo cafetero borrado en fecha: " + lecturaFecha);
+        AlertDialog alertDialog = builder.create();
+        //alertDialog.setTitle("pruebatitulo");
+        alertDialog.show();
 
     }
+
 
 
     /** Añade comportamiento a la interfaz al desplazar ítems del recyclerview
@@ -126,6 +183,10 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
         mRecyclerView.setAdapter(mCafeteroRecyclerAdapter); //le pasamos el adaptador al recyclerview
     }
 
+    
+    // LISTENERS
+    
+    //Listener del recyclerview
     @Override
     public void onCafeteroClick(Integer position) { //Manda Cafeteros de la lista al pulsar algún item del RecyclerView
         Log.d(TAG, "onCafeteroClick: Hicisteclick en el cafetero de la POSICION: " + position);
@@ -136,16 +197,28 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
         startActivity(intent);
     }
 
+    //Listener del resto de botones
     @Override
     public void onClick(View v) { // Sólo lo estoy usando con el botón flotante
-        Intent intent = new Intent(this, CafeteroActivity.class);
-        intent.putExtra("com.edusoft.dam.cafesito.cafetero_new", CafeteroActivity.class);
-        startActivity(intent);
+        switch (v.getId()){
+            case R.id.cafetero_list_fab:{
+                Intent intent = new Intent(this, CafeteroActivity.class);
+                intent.putExtra("com.edusoft.dam.cafesito.cafetero_new", CafeteroActivity.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.info_fab:{
+                informaUltimoBorrado(); //se muestra por pantalla último uso de aplicación
+                break;
+            }
+
+        }
     }
 
 
-    // BASE DE DATOS
 
+
+    // BASE DE DATOS
 
     /**
      * Borra un item de la lista de cafeteros
@@ -165,6 +238,9 @@ public class CafeteroListaActivity extends AppCompatActivity implements Cafetero
         mCafeteros.remove(cafetero); //después se borra del array
 
         mCafeteroRecyclerAdapter.notifyDataSetChanged(); //actualiza el adaptador con nuevos datos
+
+        //preferencias
+        saveDateInPreferences(); //guarda la fecha del último borrado en las preferencias
     }
 
 

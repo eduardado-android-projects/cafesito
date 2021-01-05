@@ -241,16 +241,16 @@ public class CafeteroActivity extends AppCompatActivity implements View.OnClickL
                 if(mCafeteroEditado.getNombreCompleto() != null){
                     infoUsuario = mCafeteroEditado.getNombreCompleto();
                 }
-                Toast.makeText(this, "Cafetero guardado" + infoUsuario , Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Cafetero guardado  " + infoUsuario , Toast.LENGTH_LONG).show();
             }
             finish();
         }else{ //si hemos llegado aquí pulsando un cafetero que ya existía, cuando pulsamos el botón de guardado queremos que se modifique el registro de la base de datos
             Log.d(TAG, "guardaPermanente: VIEJO CAFETERO");
             Boolean updateResult = dataBaseHelper.updateCafetero(mCafeteroViejo, mCafeteroEditado);
             if(updateResult){
-                Toast.makeText(this, "Cafetero actualizado! " , Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Cafetero actualizado! " , Toast.LENGTH_LONG).show();
             }else{
-                Toast.makeText(this, "No se ha podido actualizar al cafetero", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "No se ha podido actualizar al cafetero", Toast.LENGTH_LONG).show();
             }
 
             finish();//cuando termine se vuelve a la actividad inicial de lista

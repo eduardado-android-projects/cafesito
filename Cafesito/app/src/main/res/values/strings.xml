@@ -4,4 +4,5 @@
     <string name="hint_nombre">Nombre del Cafetero</string>
     <string name="hint_mv">(+34) 666 666 666</string>
     <string name="hint_tipoCafe">Café con leche sin lactosa, muy caliente y en taza</string>
+    <string name="com.edusoft.dam.cafesito.CAFESITO_LOG">CafesitoLogFile</string>
 </resources>
