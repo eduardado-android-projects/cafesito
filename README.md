@@ -310,5 +310,7 @@ Activities
     Toast.makeText(this, lecturaFecha, Toast.LENGTH_SHORT).show(); //mostrará por pantalla el valor recuperado
   ```
 ![Imgur](https://i.imgur.com/iIzshlp.png)
+
+![preferences](https://media.giphy.com/media/8LyxgapqBqkhpQSZ7S/giphy.gif)
   
   
