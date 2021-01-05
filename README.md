@@ -4,7 +4,8 @@ Una app de android para reciprocar cafés.
 
 ## Ramas
   * main: persistencia de datos con SQLite
-  * rama-room: persistencia de datos con Room + Arquitectura recomendada (Repository + LiveData) 
+  * rama-room: persistencia de datos con Room + Arquitectura recomendada (Repository + LiveData)
+  * rama-preferences: para añadir una feature de guardado de preferencias en la aplicación. El objetivo es hacer merge al terminar.
 
 
 <details>
@@ -53,7 +54,7 @@ Activities
     * OnCafeteroListener(custom): onCafeteroClick()
     
   #### Clase: métodos
-    * Activity: startActivity(); getActivity(); getIntent(); finish();
+    * Activity: startActivity(); getActivity(); getIntent(); finish(); getSharedPreferences()
     * Log: d(); i() ;
     * RecyclerView.ViewHolder: setText(); getAdapterPosition()
     * RecyclerView.Adapter<>: onCreateViewHolder(); onBindViewHolder(); getItemCount()
@@ -77,6 +78,10 @@ Activities
     * SQLiteDatabase: getWritableDatabase(); insert(); rawQuery(); delete(); update()
     * ContentValues: put()
     * Cursor:
+    * SharedPreferences:getString(); edit()
+    * SharedPreferences.Editor: putString(); apply()
+    * AlertDialog.Builder: setMessage(); create()
+    * AlertDialog.show()
 
     
   #### GUI Elements: atributo=valor
@@ -251,6 +256,8 @@ Activities
       2. Generamos un constructor que sólo recibirá Context como parámetro y al que le pasamos null como CursorFactory. 
       3. Creamos los métodos para add, delete, update y select que necesita nuestra aplicación (mirar código comentado)
 
+  
+
 
 </details>
 
@@ -260,5 +267,48 @@ Activities
   ![Democafesito](https://media.giphy.com/media/Zx9ZcMmvuyMi4Zelk4/giphy.gif)
 </details>
 
+#### SharedPreferences
 
+[Documentacion](https://developer.android.com/training/data-storage/shared-preferences)
 
+##### ¿Dónde se encuentra exactamente el archivo de preferencias y cómo encontrarlo
+
+<pre>
+  1. En View>Tool Windows>Device File Explorer; Podemos ver la memoria del teléfono (emulado o no) que seleccionemos en el desplegable.
+  2. En el directorio <b>data/data/nombreApp/shared_prefs</b> se encuentran los archivos xml donde se guardan las preferencias
+  Nota: Si hemos usado getPreferences() para cargar el objeto SharedPreferences, se guardarán los datos en un archivo llamado: NombreActividad.xml
+  Nota2: Si hemos usado getSharedPreferences() se generará un archivo en el mismo directorio pero con el nombre que le hayamos pasado como parámetro a dicho método.
+</pre>
+
+##### Ejemplo de uso
+
+  ```java
+
+    Date fechaActual = Calendar.getInstance().getTime();
+    String fechaString = fechaActual.toString();
+    String fechaKey = "fechaInicioSesion";
+    String fechaValue = fechaString;
+
+    //GUARDAR PREFERENCIAS DE LA ACTIVIDAD
+    //escribirá en las preferencias de la actividad porque getPreferences() se ejecuta desde el contexto, que es la actividad
+    //el nombre del archivo será paquete.Actividad.xml
+    SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+    SharedPreferences.Editor editor = sharedPreferences.edit();
+    editor.putString(fechaKey ,fechaValue);
+    editor.apply();
+
+    //AHORA CON PREFERENCIAS DEL USUARIO DE LA APLICACIÓN
+    //Al usar getSharedPreferences(), se genera un archivo (lo tenemos referenciado en el recurso strings.xml), se llama CafesitoLogFile
+    SharedPreferences sharedPreferencesGlobal = getSharedPreferences(getString(R.string.com_edusoft_dam_cafesito_CAFESITO_LOG), MODE_PRIVATE); //El objeto sharedPreferencesGlobal apunta al fichero CafesitoLogFile.xml
+    SharedPreferences.Editor globalEditor = sharedPreferencesGlobal.edit(); //cargamos el editor del las preferencias globales
+    globalEditor.putString(fechaKey,fechaValue); //guardamos pares clave:valor en el editor
+    globalEditor.apply(); //el editor aplica los cambios
+
+    //PARA LEER DEL ARCHIVO DE PREFERENCIAS GLOBAL
+    SharedPreferences sharedPreferencesLectura = getSharedPreferences(getString(R.string.com_edusoft_dam_cafesito_CAFESITO_LOG),MODE_PRIVATE);
+    String lecturaFecha = sharedPreferencesLectura.getString(fechaKey,"error"); //obtiene el valor del elto con key "fechaInicioSesion", devuelve "error" si no encuetra el key
+    Toast.makeText(this, lecturaFecha, Toast.LENGTH_SHORT).show(); //mostrará por pantalla el valor recuperado
+  ```
+![Imgur](https://i.imgur.com/iIzshlp.png)
+  
+  
