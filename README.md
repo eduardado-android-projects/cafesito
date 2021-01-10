@@ -1,59 +1,33 @@
 # Cafesito
 
-Una app de android para reciprocar cafés.
+Una app de android para recordar esos cafés/charla que queremos tener con
+nuestros amigos/compañeros.
 
-## Ramas
-  * main: persistencia de datos con SQLite
-  * rama-room: persistencia de datos con Room + Arquitectura recomendada (Repository + LiveData)
-  * rama-preferences: para añadir una feature de guardado de preferencias en la aplicación. El objetivo es hacer merge al terminar.
-
+## Demo 
 
 <details>
-  <summary>Borrador de la app antes de comenzar</summary>
+  <summary>(v1.0)</summary>
 
-
-Clase Cafetero
-  - NombreCompleto (Nombre, apellidos, sobrenombre etc.)
-  - Mv(puede server para hacer un Bizum, mandarle un whatsapp)
-  - numCafe: Integer (nº de cafés que le debemos)
-  - tipoCafe (descripcion de cómo le gusta el café)
-
-Activities
-1. Lista de cafeteros: Nombre-----NumCafe (tlf no aparece)->ListaCafeteros
-    - Botón flotante: nuevo cafetero
-    - Deslizas derecha: elimina un cafetero
-    - Botón flotante: eliminar todos
-2. Cafetero: Al pulsar sobre un cafetero me muestra una pantalla en grande con:
-    - Nombre: Arriba centrado (banda ancha ocupa toda la pantalla)
-    - Mv: debajo
-    - numCafe que le debemos: en grande
-    - tipo café: cómo le gusta el café: LinedTextView - descripción de cómo le gusta el café
-    -MODO VISION: Muestra los datos
-    -MODO EDICIÓN: Modo edición-> Al hacer doble click nos deja editar todos los campos
-3. EliminarTodos: sale un botón rojo que, al darle, se eliminan todos los cafeteros
-
-  Colores marrones
-
-  Desde 8.0 (Oreo)
-
-  Ideas no implementadas
-
-  Si desplazo a la izquierda disminuye
-  Si desplazo a la derecha aumenta
-  Si es cero y desplazo a la izquierda elimino ítem
-  Si pantalla principal, en el toolbar hay un botón que lleva a actividad 3 (ElimintarTodos)
-  
+![Democafesito](https://media.giphy.com/media/Zx9ZcMmvuyMi4Zelk4/giphy.gif)
 </details>
 
-<details>
-  <summary>Código usado</summary>
 
-  #### Interfaces
+<details>
+  <summary>(v1.1)</summary>
+
+![preferences](https://media.giphy.com/media/8LyxgapqBqkhpQSZ7S/giphy.gif)
+</details>
+
+## Código Utilizado
+<details>
+  <summary>Ver código usado</summary>
+
+  ### Interfaces
     * View.OnClickListener
     * Parceable
     * OnCafeteroListener(custom): onCafeteroClick()
     
-  #### Clase: métodos
+  ### Clase: métodos
     * Activity: startActivity(); getActivity(); getIntent(); finish(); getSharedPreferences()
     * Log: d(); i() ;
     * RecyclerView.ViewHolder: setText(); getAdapterPosition()
@@ -84,7 +58,7 @@ Activities
     * AlertDialog.show()
 
     
-  #### GUI Elements: atributo=valor
+  ### GUI Elements: atributo=valor
     * LinearLayout: orientation; weightSum; background; gravity
     * View
     * TextView: lines; textSize; padding; textColor; textSize; layout_margin_start; setText(); imeOptions="flagNoExtractUi"
@@ -105,7 +79,7 @@ Activities
     
 
   
-  #### Otros recursos usados
+  ### Otros recursos usados
     * themes.xml
     * colors.xml
     * values.xml (acceso a través de ?attr) & (acceso a través de "@string/appbar_scrolling...)
@@ -114,10 +88,11 @@ Activities
   
 </details>
 
+## Explicaciones
 <details>
-  <summary>Explicaciones</summary>
+  <summary>Ver Explicaciones</summary>
 
-  #### Implementación del RecyclerView
+  ### Implementación del RecyclerView
     1. Crear layout para un solo item (layout_cafetero_list_item.xml)
     2. Crear el adaptador
       1. Creamos clase java
@@ -136,16 +111,16 @@ Activities
         * Referenciamos: Array, adaptador y recyclerview
         * Pasamos al recyclerview una instancia del adaptador y una instancia de LinearLayoutManager
 
-  #### Separar los items con ItemDecorator
+  ### Separar los items con ItemDecorator
     1. Se crea una clase que herede de RecyclerView.ItemDecoration
     2. Se sobreescribe getItemOffset
     3. Se le pasa una instancia de este objeto al recyclerview
 
-  #### Añadir un ActionBar personalizado con comportamiento
+  ### Añadir un ActionBar personalizado con comportamiento
     1. Desactivar el ActionBar por defecto: en themes.xml sustituir DarkActionBar por NoActionBar
     2. Seguir la documentacion de https://material.io/components/app-bars-top/android#using-top-app-bars
   
-  #### Implementar OnItemListener (buenas prácticas)
+  ### Implementar OnItemListener (buenas prácticas)
     Resumen: Definimos una interfaz, que será ejecutada por cada ítem cuando se click sobre él.
 
     Aclaración: Cada ítem del recyclerview es un ViewHolder
@@ -184,7 +159,7 @@ Activities
             onCafeteroListener.onCafeteroClick(getAdapterPosition());
         }
   ```
-#### Creación de activity nº 2 + mandar objetos entre activity1 y activity2(Cafetero Activity)
+### Creación de activity nº 2 + mandar objetos entre activity1 y activity2(Cafetero Activity)
 
     - Resumen: 
       - Este activity mostrará los detalles de cada ítem. 
@@ -196,14 +171,14 @@ Activities
     4. Recuperar el objeto en el activity nº2
     5. Con el método getIntent().hasExtra() podemo discriminar de qué activity viene el Itent
 
-  #### Algunas notas sobre Layouts
+  ### Algunas notas sobre Layouts
 
     * weightSum: Si un elto padre tiene 100 como valor, podemos poner después el atributo layout_weight a los hijos para que ocupen un porcentaje del mismo, no sin antes poner layout_height/width a 0dp.
     * RelativeLayout: permite usar layout_centerInParent en los hijos. Es útil para manejar botones e imágenes centradas.
     * <include layout=""> permite anidar unos layouts dentro de otros y tener el código modularizado.
     * android:gravity es muy útil para posicionar texto
   
-  #### Crear el componente AppCompatEditText
+  ### Crear el componente AppCompatEditText
 
     Resumen: Crearemos un EditText personalizado, que tiene dibujadas líneas como si fuera papel de un cuaderno de notas.
 
@@ -212,12 +187,12 @@ Activities
     3. Sobreescribir onDraw() y, usando el objeto Rect + Paint dibujar líneas (ver código)
     4. Referenciar dicho componente en el layout
 
-  #### Usar un drawable <shape> para redondear bordes
+  ### Usar un drawable <shape> para redondear bordes
     1. Crear un drawable resource
     2. Usar <shape><stroke><corners> para definir el borde deseado
     3. Añadir al widget el atributo background referenciando el drawable.xml creado (mirar codigo)
 
-  #### View + Edit en el mismo activity
+  ### View + Edit en el mismo activity
 
     Resumen: Decido diseñar la app de tal manera que la opción READ y la opción EDIT del CRUD se muestren en la misma activity.
     Lo que hago es guardar un estado del activity en la variable "modo". Cuando se pulsa el botón flotante los widgets cambian de
@@ -225,18 +200,18 @@ Activities
     puede modificar los datos y, al volver a pulsar el botón flotante, el objeto se actualiza.
 
   
-  #### Implementación de ItemTouchHelper (para borrar ítem del recyclerview al desplazarlo a un lado)
+  ### Implementación de ItemTouchHelper (para borrar ítem del recyclerview al desplazarlo a un lado)
 
     1. Instanciar una clase abstracta ItemTouchHelper.SimpleCallback pasandole como parámetros -> 0 y la dirección (mirar código)
     2. Sobreescribir el método onSwipe() ejecutando el código que queramos (borrado de un ítem + actualización del adaptador)
 
-  #### Algunas notas sueltas
+  ### Algunas notas sueltas
 
     * Para volver terminar un activity usamos finish()
     * Al añadir el atributo imeOptions y darle el valor flagNoExtractUi hace que no se tape la interfaz cuando estamos editando
       un EditText con la pantalla en horizontal.
   
-  #### Persistencia de Datos con SQLite
+  ### Persistencia de Datos con SQLite
 
     Resumen: Una vez hemos terminado la GUI y comprobado que funciona correctamente con datos estáticos, vamos implementar la persistencia de datos con SQLite.
 
@@ -255,17 +230,6 @@ Activities
       1. Creamos una clase que herede de SQLiteOpenHelper
       2. Generamos un constructor que sólo recibirá Context como parámetro y al que le pasamos null como CursorFactory. 
       3. Creamos los métodos para add, delete, update y select que necesita nuestra aplicación (mirar código comentado)
-
-  
-
-
-</details>
-
-<details>
-  <summary>Cafesito Demo</summary>
-  
-  ![Democafesito](https://media.giphy.com/media/Zx9ZcMmvuyMi4Zelk4/giphy.gif)
-</details>
 
 #### SharedPreferences
 
@@ -311,6 +275,18 @@ Activities
   ```
 ![Imgur](https://i.imgur.com/iIzshlp.png)
 
-![preferences](https://media.giphy.com/media/8LyxgapqBqkhpQSZ7S/giphy.gif)
-  
-  
+
+</details>
+
+## Mejoras
+
+<details>
+  <summary>Ver Mejoras pendientes:</summary>
+
+- rama-room: persistencia de datos con Room + Arquitectura recomendada (Repository + LiveData)
+- Añadir foto/icono
+- 
+</details>
+
+
+
