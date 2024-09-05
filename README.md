@@ -5,14 +5,14 @@ An Android app to keep track of those talks we want to have with friends over a 
 ## Demo 
 
 <details>
-  <summary>(v1.0)</summary>
+  <summary>(v1.0)Basic functionality</summary>
 
 ![Democafesito](https://media.giphy.com/media/Zx9ZcMmvuyMi4Zelk4/giphy.gif)
 </details>
 
 
 <details>
-  <summary>(v1.1)</summary>
+  <summary>(v1.1) Extending functionality</summary>
 
 ![preferences](https://media.giphy.com/media/8LyxgapqBqkhpQSZ7S/giphy.gif)
 </details>
