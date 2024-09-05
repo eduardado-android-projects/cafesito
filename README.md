@@ -17,7 +17,7 @@ An Android app to keep track of those talks we want to have with friends over a 
 ![preferences](https://media.giphy.com/media/8LyxgapqBqkhpQSZ7S/giphy.gif)
 </details>
 
-## Codebase Explained
+## Codebase Explained (for Android Developers)
 <details>
   <summary>View Codebase explanations</summary>
 
@@ -87,9 +87,9 @@ An Android app to keep track of those talks we want to have with friends over a 
   
 </details>
 
-## Explanations
+## Explanations (for Android Developers)
 <details>
-  <summary>Ver Explicaciones</summary>
+  <summary>View Explanations</summary>
 
   ### RecyclerView Implementation
     1. Crear layout para un solo item (layout_cafetero_list_item.xml)
