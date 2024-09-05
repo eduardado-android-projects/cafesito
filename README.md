@@ -1,7 +1,6 @@
 # Cafesito
 
-Una app de android para recordar esos cafés/charla que queremos tener con
-nuestros amigos/compañeros.
+An Android app to keep track of those talks we want to have with friends over a coffee and have many coffees we think it will take.
 
 ## Demo 
 
