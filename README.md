@@ -17,16 +17,16 @@ An Android app to keep track of those talks we want to have with friends over a 
 ![preferences](https://media.giphy.com/media/8LyxgapqBqkhpQSZ7S/giphy.gif)
 </details>
 
-## Código Utilizado
+## Codebase Explained
 <details>
-  <summary>Ver código usado</summary>
+  <summary>View Codebase explanations</summary>
 
   ### Interfaces
     * View.OnClickListener
     * Parceable
     * OnCafeteroListener(custom): onCafeteroClick()
     
-  ### Clase: métodos
+  ### Classes: methods
     * Activity: startActivity(); getActivity(); getIntent(); finish(); getSharedPreferences()
     * Log: d(); i() ;
     * RecyclerView.ViewHolder: setText(); getAdapterPosition()
@@ -57,7 +57,7 @@ An Android app to keep track of those talks we want to have with friends over a 
     * AlertDialog.show()
 
     
-  ### GUI Elements: atributo=valor
+  ### GUI Elements: attribute=value
     * LinearLayout: orientation; weightSum; background; gravity
     * View
     * TextView: lines; textSize; padding; textColor; textSize; layout_margin_start; setText(); imeOptions="flagNoExtractUi"
@@ -78,7 +78,7 @@ An Android app to keep track of those talks we want to have with friends over a 
     
 
   
-  ### Otros recursos usados
+  ### Other resources used
     * themes.xml
     * colors.xml
     * values.xml (acceso a través de ?attr) & (acceso a través de "@string/appbar_scrolling...)
@@ -87,11 +87,11 @@ An Android app to keep track of those talks we want to have with friends over a 
   
 </details>
 
-## Explicaciones
+## Explanations
 <details>
   <summary>Ver Explicaciones</summary>
 
-  ### Implementación del RecyclerView
+  ### RecyclerView Implementation
     1. Crear layout para un solo item (layout_cafetero_list_item.xml)
     2. Crear el adaptador
       1. Creamos clase java
@@ -110,16 +110,16 @@ An Android app to keep track of those talks we want to have with friends over a 
         * Referenciamos: Array, adaptador y recyclerview
         * Pasamos al recyclerview una instancia del adaptador y una instancia de LinearLayoutManager
 
-  ### Separar los items con ItemDecorator
+  ### Splitting items with ItemDecorator
     1. Se crea una clase que herede de RecyclerView.ItemDecoration
     2. Se sobreescribe getItemOffset
     3. Se le pasa una instancia de este objeto al recyclerview
 
-  ### Añadir un ActionBar personalizado con comportamiento
+  ### ActionBar with custom behaviour
     1. Desactivar el ActionBar por defecto: en themes.xml sustituir DarkActionBar por NoActionBar
     2. Seguir la documentacion de https://material.io/components/app-bars-top/android#using-top-app-bars
   
-  ### Implementar OnItemListener (buenas prácticas)
+  ### OnItemListener: Good practice implementation
     Resumen: Definimos una interfaz, que será ejecutada por cada ítem cuando se click sobre él.
 
     Aclaración: Cada ítem del recyclerview es un ViewHolder
@@ -144,13 +144,13 @@ An Android app to keep track of those talks we want to have with friends over a 
       * Sobreescribe onClick: usa la interfaz y le pasa la posición del ítem como parámetro gracias a getAdapterPosition()
     3. Sobreescribimos onClick() 
 
-  Interfaz:
+  Interface:
   ```java
   public interface OnCafeteroListener{
       void onCafeteroClick(Integer position);
   }
   ```
-  Sobreescritura de onClick()
+  Overriding onClick()
 
   ```java
   @Override
@@ -158,7 +158,7 @@ An Android app to keep track of those talks we want to have with friends over a 
             onCafeteroListener.onCafeteroClick(getAdapterPosition());
         }
   ```
-### Creación de activity nº 2 + mandar objetos entre activity1 y activity2(Cafetero Activity)
+### Activity creation and passing objects between Activity1 and Activity2
 
     - Resumen: 
       - Este activity mostrará los detalles de cada ítem. 
@@ -170,14 +170,14 @@ An Android app to keep track of those talks we want to have with friends over a 
     4. Recuperar el objeto en el activity nº2
     5. Con el método getIntent().hasExtra() podemo discriminar de qué activity viene el Itent
 
-  ### Algunas notas sobre Layouts
+  ### Layouts: Some notes
 
     * weightSum: Si un elto padre tiene 100 como valor, podemos poner después el atributo layout_weight a los hijos para que ocupen un porcentaje del mismo, no sin antes poner layout_height/width a 0dp.
     * RelativeLayout: permite usar layout_centerInParent en los hijos. Es útil para manejar botones e imágenes centradas.
     * <include layout=""> permite anidar unos layouts dentro de otros y tener el código modularizado.
     * android:gravity es muy útil para posicionar texto
   
-  ### Crear el componente AppCompatEditText
+  ### AppCompatEditText: creating the component
 
     Resumen: Crearemos un EditText personalizado, que tiene dibujadas líneas como si fuera papel de un cuaderno de notas.
 
@@ -186,12 +186,12 @@ An Android app to keep track of those talks we want to have with friends over a 
     3. Sobreescribir onDraw() y, usando el objeto Rect + Paint dibujar líneas (ver código)
     4. Referenciar dicho componente en el layout
 
-  ### Usar un drawable <shape> para redondear bordes
+  ### Softening the borders with drawable <shape>
     1. Crear un drawable resource
     2. Usar <shape><stroke><corners> para definir el borde deseado
     3. Añadir al widget el atributo background referenciando el drawable.xml creado (mirar codigo)
 
-  ### View + Edit en el mismo activity
+  ### View + Edit in the same Activity: Design decision
 
     Resumen: Decido diseñar la app de tal manera que la opción READ y la opción EDIT del CRUD se muestren en la misma activity.
     Lo que hago es guardar un estado del activity en la variable "modo". Cuando se pulsa el botón flotante los widgets cambian de
@@ -199,18 +199,18 @@ An Android app to keep track of those talks we want to have with friends over a 
     puede modificar los datos y, al volver a pulsar el botón flotante, el objeto se actualiza.
 
   
-  ### Implementación de ItemTouchHelper (para borrar ítem del recyclerview al desplazarlo a un lado)
+  ### ItemTouchHelper implementation (deleting an item from the recyclerview swaping left or right)
 
     1. Instanciar una clase abstracta ItemTouchHelper.SimpleCallback pasandole como parámetros -> 0 y la dirección (mirar código)
     2. Sobreescribir el método onSwipe() ejecutando el código que queramos (borrado de un ítem + actualización del adaptador)
 
-  ### Algunas notas sueltas
+  ### Some random notes
 
     * Para volver terminar un activity usamos finish()
     * Al añadir el atributo imeOptions y darle el valor flagNoExtractUi hace que no se tape la interfaz cuando estamos editando
       un EditText con la pantalla en horizontal.
   
-  ### Persistencia de Datos con SQLite
+  ### Data Persistence with SQLite
 
     Resumen: Una vez hemos terminado la GUI y comprobado que funciona correctamente con datos estáticos, vamos implementar la persistencia de datos con SQLite.
 
@@ -234,7 +234,7 @@ An Android app to keep track of those talks we want to have with friends over a 
 
 [Documentacion](https://developer.android.com/training/data-storage/shared-preferences)
 
-##### ¿Dónde se encuentra exactamente el archivo de preferencias y cómo encontrarlo
+##### Where to find preferences file
 
 <pre>
   1. En View>Tool Windows>Device File Explorer; Podemos ver la memoria del teléfono (emulado o no) que seleccionemos en el desplegable.
@@ -243,7 +243,7 @@ An Android app to keep track of those talks we want to have with friends over a 
   Nota2: Si hemos usado getSharedPreferences() se generará un archivo en el mismo directorio pero con el nombre que le hayamos pasado como parámetro a dicho método.
 </pre>
 
-##### Ejemplo de uso
+##### Use example
 
   ```java
 
@@ -277,7 +277,7 @@ An Android app to keep track of those talks we want to have with friends over a 
 
 </details>
 
-## Mejoras
+## Improvements for the future
 
 <details>
   <summary>Ver Mejoras pendientes:</summary>
